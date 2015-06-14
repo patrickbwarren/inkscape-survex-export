@@ -169,15 +169,16 @@ processed with
 perl reconstruct.pl --scale=30 loneranger.svg > loneranger.svx
 ```
 
-This can be processed by `cavern` right away, but to finish off the
-magnetic declination is inserted as described above, and any
-superfluous `*equate`s can be commented out.  In fact `loneranger.svg`
-can also be used to illustrate the use of named Inkscape layers to
-break a survey into smaller pieces since the section from Matchbox
-aven to Tonto aven is in a layer named "matchbox" and the remaining
-passage beyond Tonto aven is in a layer named "silverstream".  Thus
-`loneranger.svg` can also be processed into _two_ survex files with
-the following commands:
+This can be processed by `cavern` to a `.3d` right away, but to finish
+off the magnetic declination would be inserted as described above, and
+any superfluous `*equate`s can be commented out.
+
+In fact `loneranger.svg` can also be used to illustrate the use of
+named Inkscape layers to break a survey into smaller pieces since the
+section from Matchbox aven to Tonto aven is in a layer named
+"matchbox", and the remaining passage beyond Tonto aven is in a layer
+named "silverstream".  Thus `loneranger.svg` can also be processed
+into _two_ survex files with the following commands:
 
 ```
 perl reconstruct.pl --scale=30 --layer=matchbox loneranger_layered.svg > matchbox.svx
@@ -191,10 +192,11 @@ here set by the layer name).  Each of these survex files can be
 processed with `cavern` and viewed with `aven`.  To stitch them
 together we note that Tonto aven is station 8 in `path4288` in
 `matchbox.svx`, and is also station 0 in `path4290` in
-`silverstream.svx`.  Hence the following short survex file will do
-the job:
+`silverstream.svx`.  Hence the following short survex file (here
+called `combined.svx`) will do the job:
 
 ```
+; combined.svx 
 *include matchbox
 *include silverstream
 *equate matchbox.path4288.8 silverstream.path4290.0
@@ -207,7 +209,8 @@ list of stations exported from the `path4288` block, _and_ add a line
 `*export path4288.8` just below the top level `*begin matchbox`
 statement (both are needed, as stations must be exported from each
 layer in turn).  A similar pair of edits is required in
-`silverstream.svx`.
+`silverstream.svx`.  Then one should be able to process `combined.svx`
+to a `.3d` file.
 
 ---
 
