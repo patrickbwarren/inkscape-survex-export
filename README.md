@@ -161,34 +161,23 @@ jump around though.
 The file `loneranger.svg` shows traverses traced on top of a PNG image
 of the Lone Ranger series (Link Pot, Easegill) survey, taken from
 [CaveMaps](http://cavemaps.org/ "CaveMaps home page"), originally
-published in CPC Journal 6(2).  The PNG image is embedded in this
-file, hence it is rather large and takes a noticeable time -- half a
-second -- to process.  The scale bar line end-end distance is 30m so
-the SVG file is processed with
+published in CPC Journal 6(2).  The PNG image is linked in this file.
+The scale bar line end-end distance is 30m so the SVG file is
+processed with
 
 ```
 perl reconstruct.pl --scale=30 loneranger.svg > loneranger.svx
 ```
 
-This can be processed by `cavern` right away, but to finish off: the
-magnetic declination is inserted as described above; a superfluous
-`*equate` can be commented out;the starting station at Matchbox Aven
-was exported through the `*begin` and `*end` blocks to tie in with the
-master survey.
-
-The SVG file `loneranger_linked.svg` is the same as `loneranger.svg`
-except that it only contains a link to the PNG image -- it is much
-smaller and is processed by `reconstruct.pl` almost instantaneusly.
-If you download this SVG file and try to open it in Inkscape, a
-generic "image not found" box is shown (the missing image does not
-affect `reconstruct.pl`).
-
-The SVG file `longeranger_layered.svg` illustrates the use of named
-Inkscape layers to break a survey into smaller pieces.  In this case
-the section from Matchbox aven to Tonto aven is in a layer named
-"matchbox" and the remaining passage beyond Tonto aven is in a layer
-named "silverstream".  The SVG file can be processed into _two_ survex
-files with the following commands:
+This can be processed by `cavern` right away, but to finish off the
+magnetic declination is inserted as described above, and any
+superfluous `*equate`s can be commented out.  In fact `loneranger.svg`
+can also be used to illustrate the use of named Inkscape layers to
+break a survey into smaller pieces since the section from Matchbox
+aven to Tonto aven is in a layer named "matchbox" and the remaining
+passage beyond Tonto aven is in a layer named "silverstream".  Thus
+`loneranger.svg` can also be processed into _two_ survex files with
+the following commands:
 
 ```
 perl reconstruct.pl --scale=30 --layer=matchbox loneranger_layered.svg > matchbox.svx
