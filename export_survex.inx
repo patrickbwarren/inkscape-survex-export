@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<inkscape-extension xmlns="http://www.inkscape.org/namespace/inkscape/extension">
+  <_name>Survex</_name>
+  <id>org.patrickbwarren.filter.export.survex</id>
+  <dependency type="executable" location="extensions">export_survex.py</dependency>
+  <dependency type="executable" location="extensions">inkex.py</dependency>
+  <dependency type="executable" location="extensions">simplepath.py</dependency>
+  <dependency type="executable" location="extensions">simplestyle.py</dependency>
+  <param name="introduction" type="description">Export paths as survex file.</param>
+  <param name="introduction" type="description">Default file location and file name will be taken from the image.</param>
+  <param name="tab" type="notebook">
+    <page name="Options" _gui-text="Options">
+      <param name="file" type="string" _gui-text="Survex file name (if not default)"></param>
+      <param name="dir" type="string" _gui-text="Survex file location (if not default)"></param>
+      <param name="name" type="string" _gui-text="Outermost begin-end block name (if not default)"></param>
+      <param name="scale" type="float" precision="2" min="0" max="9999"
+	     _gui-text="Length of scale bar (in m)">100.00</param>
+      <param name="bearing" type="float" precision="1" min="0" max="360"
+	     _gui-text="Bearing for orientation line (in degrees)">0.0</param>
+      <param name="tol" type="float" precision="2" min="0" max="9999"
+	     _gui-text="Tolerance to equate stations (in m)">0.2</param>
+      <param name="restrict" type="boolean" _gui-text="Restrict conversion to a named layer :">false</param>
+      <param name="layer" type="string" _gui-text=" "></param>
+      <param name="extra" type="boolean" _gui-text="Include extra information in output">false</param>
+    </page>
+    <page name="Help" _gui-text="Help">
+      <param name="about1" type="description">The following conventions are observed:</param>
+      <param name="about2" type="description"> * red lines are converted to traverses;</param>
+      <param name="about3" type="description"> * a green line represents the orientation (default S to N);</param>
+      <param name="about4" type="description"> * a blue line represents the scale bar.</param>
+    </page>
+  </param>
+  <effect needs-live-preview="false" needs-document="true">
+    <object-type>all</object-type>
+    <effects-menu>
+       <submenu _name="Export"/>
+    </effects-menu>
+  </effect>
+  <script>
+    <command reldir="extensions" interpreter="python">export_survex.py</command>
+  </script>
+</inkscape-extension>
