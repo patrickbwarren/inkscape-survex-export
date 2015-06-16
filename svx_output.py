@@ -1,8 +1,7 @@
 #!/usr/bin/env python
-#!/usr/bin/env python
 
 """
-reconstruct.py
+svx_output.py
 Python script for exporting survex (.svx) file from Inkscape
 
 Copyright (C) 2015 Patrick B Warren
@@ -47,7 +46,7 @@ station_x = []
 station_y = []
 station_id = []
 
-def push_station(x, y, station):
+def push_station(station, x, y):
     station_x.append(x)
     station_y.append(y)
     station_id.append(station)
@@ -208,7 +207,7 @@ for i in range(len(path_id)):
             dy = steps[j][1][1] - steps[j-1][1][1]
             dl = math.sqrt(dx*dx + dy*dy)
             tape = sf * dl
-            compass = e.options.north + 180 * math.atan2(ex*dx+ey*dy, nx*dx+ny*dy) / math.pi
+            compass = e.options.north + math.degrees(math.atan2(ex*dx+ey*dy, nx*dx+ny*dy))
             legs.append("%3i %3i %7.2f  " % (j-1, j, tape) + sprintd(compass) + "  0.0")
             
         traverse_legs.append(legs)
@@ -219,3 +218,5 @@ for i in range(len(traverse_id)):
         print traverse_legs[i][j]
     print "*end", traverse_id[i]
 
+for i in range(len(station_id)):
+    print station_id[i], "(%g, %g)" % (station_x[i], station_y[i])    
