@@ -11,14 +11,12 @@
     <page name="Options" _gui-text="Options">
       <param name="scale" type="float" precision="2" min="0" max="9999"
 	     _gui-text="Length of scale bar (in m)">100.00</param>
-      <param name="bearing" type="float" precision="1" min="0" max="360"
-	     _gui-text="Bearing for orientation line (in degrees)">0.0</param>
+      <param name="north" type="float" precision="1" min="0" max="360"
+	     _gui-text="Bearing of orientation line (in degrees)">0.0</param>
       <param name="tol" type="float" precision="2" min="0" max="9999"
 	     _gui-text="Tolerance to equate stations (in m)">0.2</param>
-      <param name="restrict" type="boolean" _gui-text="Restrict conversion to a named layer :">false</param>
-      <param name="layer" type="string" _gui-text="  name of layer"></param>
+      <param name="layer" type="string" _gui-text="Restrict conversion to a named layer"></param>
       <param name="name" type="string" _gui-text="Outermost begin-end block name (if not default)"></param>
-      <param name="extra" type="boolean" _gui-text="Include extra information in output">false</param>
     </page>
     <page name="Help" _gui-text="Help">
       <param name="about1" type="description">The following conventions are observed:</param>

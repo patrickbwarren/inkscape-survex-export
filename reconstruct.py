@@ -67,8 +67,8 @@ e.OptionParser.add_option('--scale', action = 'store',
                           type = 'float', dest = 'scale', default = '100.0',
                           help = 'Length of scale bar (in m)')
 
-e.OptionParser.add_option('--bearing', action = 'store',
-                          type = 'float', dest = 'bearing', default = '0.0',
+e.OptionParser.add_option('--north', action = 'store',
+                          type = 'float', dest = 'north', default = '0.0',
                           help = 'Bearing for orientation line (in degrees)')
         
 e.OptionParser.add_option('--tol', action = 'store',
@@ -83,14 +83,10 @@ e.OptionParser.add_option('--name', action = 'store',
                           type = 'string', dest = 'name', default = '',
                           help = 'Outermost begin-end block name')
 
-e.OptionParser.add_option('--extra', action = 'store',
-                          type = 'string', dest = 'extra', default = 'false',
-                          help = 'Include extra information in output')
-
 e.getoptions()
 
 print 'scale = ', e.options.scale
-print 'bearing = ', e.options.bearing
+print 'north = ', e.options.north
 print 'tol = ', e.options.tol
 
 if e.options.layer == '':
@@ -102,11 +98,6 @@ if e.options.name != '':
     print 'begin-end block name = ', e.options.name
 else:
     print 'using default begin-end block name' 
-
-if e.options.extra == "true":
-    print 'including extra information in file'
-else:
-    print 'not including extra information in file'
 
 svgfile = sys.argv[-1]
 
@@ -160,7 +151,7 @@ if not found:
     sys.exit(1)
 
 # Construct the unit vector (nx, ny) to point along N, and the unit
-# (ex, ey) to point along E.  We correct for the bearing later.
+# (ex, ey) to point along E.  We correct for north later.
 
 steps = simplepath.parsePath(path_d[i])
 
@@ -197,11 +188,34 @@ dl = math.sqrt(dx*dx + dy*dy)
 
 sf = e.options.scale / dl
 
-print dx, dy
-print dl
-print sf
+# Now build the survex traverses.  The survex legs are collected as a
+# multiline string.  Also keep track of stations and absolute (in SVG coords)
+# positions to identify equates and exports.
 
-#print path_id[i]
-#print path_d[i]
-#print path_stroke[i]
-#print path_layer[i]
+traverse_id = []
+traverse_legs = []
+
+for i in range(len(path_id)):
+    if (path_stroke[i] == "#ff0000" and (e.options.layer == "" or path_layer[i] == e.options.layer)):
+        traverse = path_id[i]
+        traverse_id.append(traverse)
+        steps = simplepath.parsePath(path_d[i])
+        push_station("%s.0" % traverse, steps[0][1][0], steps[0][1][1])
+        legs = []
+        for j in range(1, len(steps)):
+            push_station("%s.%i" % (traverse, j), steps[j][1][0], steps[j][1][1])
+            dx = steps[j][1][0] - steps[j-1][1][0]
+            dy = steps[j][1][1] - steps[j-1][1][1]
+            dl = math.sqrt(dx*dx + dy*dy)
+            tape = sf * dl
+            compass = e.options.north + 180 * math.atan2(ex*dx+ey*dy, nx*dx+ny*dy) / math.pi
+            legs.append("%3i %3i %7.2f  " % (j-1, j, tape) + sprintd(compass) + "  0.0")
+            
+        traverse_legs.append(legs)
+
+for i in range(len(traverse_id)):
+    print "*begin", traverse_id[i]
+    for j in range(len(traverse_legs[i])):
+        print traverse_legs[i][j]
+    print "*end", traverse_id[i]
+
