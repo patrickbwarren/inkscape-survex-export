@@ -194,8 +194,7 @@ for i in range(len(path_id)):
         legs = []
         for j in range(1, len(steps)):
             dx, dy = steps[j][1][0]-steps[j-1][1][0], steps[j][1][1]-steps[j-1][1][1]
-            dl = math.sqrt(dx*dx + dy*dy)
-            tape = scalefac * dl
+            tape = scalefac * math.sqrt(dx*dx + dy*dy)
             compass = e.options.north + math.degrees(math.atan2(ex*dx+ey*dy, nx*dx+ny*dy))
             legs.append("%3i %3i %7.2f  " % (j-1, j, tape) + sprintd(compass) + "  0.0")
         traverse_legs.append(legs)
@@ -238,26 +237,26 @@ if nstation > 1:
 # Extract the set of stations required for export from the list of
 # equates.
 
-exportset = set()
+exports = set()
 
 for equate in equates:
     station1, station2 = equate.split(' ', 4)[1:3]
-    exportset.add(station1)
-    exportset.add(station2)
+    exports.add(station1)
+    exports.add(station2)
 
 # We use a dictionary to keep track of stations which should be
 # exported from a given traverse.
 
-exportdict = dict()
+exportd = dict()
 
-for export in exportset:
+for export in exports:
     traverse, station = export.split('.', 2)
-    if traverse in exportdict:
-        exportdict[traverse].append(station)
+    if traverse in exportd:
+        exportd[traverse].append(station)
     else:
-        exportdict[traverse] = [station]
+        exportd[traverse] = [station]
 
-for k, v in exportdict.iteritems():
+for k, v in exportd.iteritems():
     print k, "-->", ' '.join(sorted(v))
 
 
