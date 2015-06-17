@@ -107,7 +107,9 @@ svg = e.document.getroot()
 docname = svg.attrib['{%s}docname' % inkex.NSS[u'sodipodi']]
 print 'docname =', docname
 
-el = svg.find('.//svg:image', namespaces=inkex.NSS)
+# el = svg.find('.//svg:image', namespaces=inkex.NSS)
+el = svg.find('.//{http://www.w3.org/2000/svg}image') # FIX THIS
+
 absref = el.attrib['{%s}absref' % inkex.NSS[u'sodipodi']]
 path, img = os.path.split(absref)
 print 'image path =', path
@@ -120,7 +122,8 @@ path_d = []
 path_stroke = []
 path_layer = []
   
-list = svg.findall('.//svg:g/svg:path', namespaces=inkex.NSS)
+# list = svg.findall('.//svg:g/svg:path', namespaces=inkex.NSS)
+list = svg.findall('.//{http://www.w3.org/2000/svg}g/{http://www.w3.org/2000/svg}path') # FIX THIS
 
 for path in list:
     path_id.append(path.attrib['id'])
