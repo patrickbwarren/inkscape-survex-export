@@ -108,8 +108,9 @@ docname = svg.attrib['{%s}docname' % inkex.NSS[u'sodipodi']]
 print 'docname =', docname
 
 # el = svg.find('.//svg:image', namespaces=inkex.NSS)
-el = svg.find('.//{http://www.w3.org/2000/svg}image') # FIX THIS
+# el = svg.find('.//{http://www.w3.org/2000/svg}image')
 
+el = svg.find('.//{%(svg)s}image' % {'svg':inkex.NSS[u'svg']})
 absref = el.attrib['{%s}absref' % inkex.NSS[u'sodipodi']]
 path, img = os.path.split(absref)
 print 'image path =', path
@@ -123,7 +124,9 @@ path_stroke = []
 path_layer = []
   
 # list = svg.findall('.//svg:g/svg:path', namespaces=inkex.NSS)
-list = svg.findall('.//{http://www.w3.org/2000/svg}g/{http://www.w3.org/2000/svg}path') # FIX THIS
+# list = svg.findall('.//{http://www.w3.org/2000/svg}g/{http://www.w3.org/2000/svg}path')
+
+list = svg.findall('.//{%(svg)s}g/{%(svg)s}path' % {'svg':inkex.NSS[u'svg']})
 
 for path in list:
     path_id.append(path.attrib['id'])
@@ -156,15 +159,11 @@ if not found:
 # (ex, ey) to point along E.  We correct for north later.
 
 steps = simplepath.parsePath(path_d[i])
-
 dx = steps[1][1][0] - steps[0][1][0]
 dy = steps[1][1][1] - steps[0][1][1]
-
 dl = math.sqrt(dx*dx + dy*dy)
-
 nx = dx / dl
 ny = dy / dl
-
 ex = - ny
 ey = nx
 
@@ -182,12 +181,9 @@ if not found:
     sys.exit(1)
 
 steps = simplepath.parsePath(path_d[i])
-
 dx = steps[1][1][0] - steps[0][1][0]
 dy = steps[1][1][1] - steps[0][1][1]
-
 dl = math.sqrt(dx*dx + dy*dy)
-
 sf = e.options.scale / dl
 
 # Now build the survex traverses.  The survex legs are collected as a
