@@ -28,6 +28,7 @@ along with this program.  If not, see
 import os
 import sys
 import math
+import time
 
 import inkex
 import simplepath
@@ -40,12 +41,14 @@ def sprintd(b):
     b = int(b + 0.5)
     while b >= 360:
         b -= 360
-    return "%03i" % b
+    return '%03i' % b
 
-print 'Number of arguments:', len(sys.argv), 'arguments.'
-print 'Argument List:', str(sys.argv)
-
-print 'Final argument: ', sys.argv[-1]
+def measure(steps):
+    "Measure the distance between first two steps"
+    dx = steps[1][1][0]-steps[0][1][0]
+    dy = steps[1][1][1]-steps[0][1][1]
+    dl = math.sqrt(dx*dx + dy*dy)
+    return dx, dy, dl
 
 e = inkex.Effect()
 
@@ -75,20 +78,6 @@ e.OptionParser.add_option('--name', action = 'store',
 
 e.getoptions()
 
-print 'scale = ', e.options.scale
-print 'north = ', e.options.north
-print 'tol = ', e.options.tol
-
-if e.options.layer == '':
-    print 'unrestricted export'
-else:
-    print 'restricting export to layer = ', e.options.layer
-
-if e.options.name != '':
-    print 'begin-end block name = ', e.options.name
-else:
-    print 'using default begin-end block name' 
-
 svgfile = sys.argv[-1]
 
 e.parse(svgfile)
@@ -96,27 +85,11 @@ e.parse(svgfile)
 svg = e.document.getroot()
 
 docname = svg.attrib['{%s}docname' % inkex.NSS[u'sodipodi']]
-print 'docname =', docname
 
 # el = svg.find('.//svg:image', namespaces=inkex.NSS)
 el = svg.find('.//{%(svg)s}image' % {'svg':inkex.NSS[u'svg']})
 absref = el.attrib['{%s}absref' % inkex.NSS[u'sodipodi']]
-path, img = os.path.split(absref)
-print 'image path =', path
-print 'image file = ', img
-
-# Collect the pertinant path data by parsing the XML SVG file
-# This will become a list of tuples (id, d, stroke, layer)
-
-paths = [] 
-  
-# list = svg.findall('.//svg:g/svg:path', namespaces=inkex.NSS)
-lines = svg.findall('.//{%(svg)s}g/{%(svg)s}path' % {'svg':inkex.NSS[u'svg']})
-
-for line in lines:
-    stroke = simplestyle.parseStyle(line.attrib['style'])['stroke']
-    layer = line.getparent().attrib['{%s}label' % inkex.NSS[u'inkscape']]
-    paths.append((line.attrib['id'], line.attrib['d'], stroke, layer))
+imgfile = os.path.split(absref)[1]
 
 # Figure out a name for the top level block, if not set as an option.
 
@@ -126,71 +99,83 @@ if e.options.name == '':
     else:
         e.options.name = e.options.layer
 
-# Figure out the orientation vector (green is 00ff00)
+# Collect the pertinant path data by parsing the XML SVG file
+
+# list = svg.findall('.//svg:g/svg:path', namespaces=inkex.NSS)
+lines = svg.findall('.//{%(svg)s}g/{%(svg)s}path' % {'svg':inkex.NSS[u'svg']})
+
+# Paths is a list of tuples (id, d, stroke, layer)
+
+paths = [] 
+  
+for line in lines:
+    stroke = simplestyle.parseStyle(line.attrib['style'])['stroke']
+    layer = line.getparent().attrib['{%s}label' % inkex.NSS[u'inkscape']]
+    paths.append((line.attrib['id'], line.attrib['d'], stroke, layer))
+
+# Figure out the orientation (green is 00ff00)
 
 subpaths = filter(lambda path: path[2] == '#00ff00', paths)
 
 if not subpaths:
-    print "No green (stroke:#00ff00) orientation vector found"
+    print 'No green (stroke:#00ff00) orientation vector found'
     sys.exit(1)
 
 # Construct the unit vector (nx, ny) to point along N, and the unit
 # (ex, ey) to point along E.  We correct for north later.
 
 steps = simplepath.parsePath(subpaths[0][1])
-dx, dy = steps[1][1][0]-steps[0][1][0], steps[1][1][1]-steps[0][1][1]
-dl = math.sqrt(dx*dx + dy*dy)
+dx, dy, dl = measure(steps)
 nx, ny = dx/dl, dy/dl
 ex, ey = -ny, nx
 
-# Figure out the scale vector (blue is 0000ff) and calculate scale factor
+# Figure out the scale (blue is 0000ff)
 
 subpaths = filter(lambda path: path[2] == '#0000ff', paths)
 
 if not subpaths:
-    print "No blue (stroke:#0000ff) scale bar found"
+    print 'No blue (stroke:#0000ff) scale bar found'
     sys.exit(1)
 
+# Calculate the scale factor
+    
 steps = simplepath.parsePath(subpaths[0][1])
-dx, dy = steps[1][1][0]-steps[0][1][0], steps[1][1][1]-steps[0][1][1]
-dl = math.sqrt(dx*dx + dy*dy)
-scalefac = e.options.scale / dl
-
-print 'scalefac = ', scalefac
+dx, dy, scalelen = measure(steps)
+scalefac = e.options.scale / scalelen
 
 # Now build the survex traverses.  Also keep track of stations and
-# absolute (in SVG coords) positions to identify equates and exports.
-# stations is a list of tuples (x, y, name)
-# traverses is a list of tuples (name, legs)
-# where legs is a list of strings representing survey legs
+# absolute positions to identify equates and exports.
 
 paths = filter(lambda path: path[2] == '#ff0000', paths)
 
-if e.options.layer != "":
+if e.options.layer != '':
     paths = filter(lambda path: path[3] == e.options.layer, paths)
 
 if not paths:
-    if e.options.layer == "":
-        print "No red (stroke:#ff0000) paths found"
+    if e.options.layer == '':
+        print 'No red (stroke:#ff0000) paths found'
     else:
-        print "No red (stroke:#ff0000) paths found in the layer '%s'" % e.options.layer
+        print 'No red (stroke:#ff0000) paths found in the layer "%s"' % e.options.layer
     sys.exit(1)
 
-traverses = []
+# Stations is a list of tuples of (traverse_name, station_id, x, y)
+# Traverses is a list of tuples of (traverse_name, legs)
+# Legs is a list of tuples of (from_id, to_id, tape, compass)
+
 stations = []
+traverses = []
 
 for path in paths:
-    traverse = path[0]
     steps = simplepath.parsePath(path[1])
     for i, step in enumerate(steps):
-        stations.append((step[1][0], step[1][1], traverse + '.%i' % i))
+        stations.append((path[0], i, step[1][0], step[1][1]))
     legs = []
     for i in range(1, len(steps)):
-        dx, dy = steps[i][1][0]-steps[i-1][1][0], steps[i][1][1]-steps[i-1][1][1]
-        tape = scalefac * math.sqrt(dx*dx + dy*dy)
+        dx, dy, dl = measure(steps[i-1:])
+        tape = scalefac * dl
         compass = e.options.north + math.degrees(math.atan2(ex*dx+ey*dy, nx*dx+ny*dy))
-        legs.append("%3i %3i %7.2f  " % (i-1, i, tape) + sprintd(compass) + "  0.0")
-    traverses.append((traverse, legs))
+        legs.append((i-1, i, tape, compass))
+    traverses.append((path[0], legs))
 
 ntraverse = len(traverses)
 nstation = len(stations)
@@ -202,15 +187,18 @@ nstation = len(stations)
 # allocated its own survex file.  This can be facilitated by putting
 # different sections into different inkscape layers.
 
+# Equates is a list of tuples of (station, station, distance)
+# where station is a tuple (traverse_name, station_id)
+
 equates = []
 
 if nstation > 1:
     for i in range(nstation-1):
         for j in range(i+1, nstation):
-            dx, dy = stations[i][0]-stations[j][0], stations[i][1]-stations[j][1]
+            dx, dy = stations[i][2]-stations[j][2], stations[i][3]-stations[j][3]
             dl = scalefac * math.sqrt(dx*dx + dy*dy)
             if dl < e.options.tol:
-                equates.append('*equate %s %s ; dl = %4.2f m' % (stations[i][2], stations[j][2], dl))
+                equates.append((stations[i][0:2], stations[j][0:2], dl))
 
 # Afficianados will notice this is a job only half done.  What we have
 # generated is an (incomplete) list of equivalence relations between
@@ -230,28 +218,61 @@ if nstation > 1:
 # Extract the set of stations required for export from the list of
 # equates.
 
+# Exports is a set of stations where a station is a tuple
+# (traverse_name, station_id)
+
 exports = set()
 
 for equate in equates:
-    station1, station2 = equate.split(' ', 4)[1:3]
-    exports.add(station1)
-    exports.add(station2)
+    exports.add(equate[0])
+    exports.add(equate[1])
 
 # We use a dictionary to keep track of stations which should be
 # exported from a given traverse.
 
 exportd = dict()
 
-for export in exports:
-    traverse, station = export.split('.', 2)
-    if traverse in exportd:
-        exportd[traverse].append(station)
+for traverse_name, station_id in exports:
+    if traverse_name in exportd:
+        exportd[traverse_name].append(station_id)
     else:
-        exportd[traverse] = [station]
-
-for k, v in exportd.iteritems():
-    print k, "-->", ' '.join(sorted(v))
+        exportd[traverse_name] = [station_id]
 
 # If we made it this far we're ready to write the survex file
 
+print '; survex file autogenerated from', docname
+print '; embedded image file name', imgfile
+print '; generated', time.strftime('%c')
+print
+print '; SVG orientation: (%g, %g) is ' % (nx, ny), sprintd(e.options.north)
+print '; SVG orientation: (%g, %g) is ' % (ex, ey), sprintd(e.options.north + 90)
+print '; SVG scale: %g is %g m, scale factor = %g' % (scalelen, e.options.scale, scalefac)
+print '; SVG contained %i traverses and %i stations' % (ntraverse, nstation)
+print '; tolerance for identifying equates = %g m' % e.options.tol
+print
+print '*data cylpolar from to tape compass depthchange'
 
+if e.options.name != '':
+    print
+    print '*begin', e.options.name
+
+for equate in equates:
+    print '*equate %s.%i' % equate[0], '%s.%i' % equate[1], '; separation %0.2f m' % equate[2]
+
+for traverse in traverses:
+    print
+    print '*begin', traverse[0]
+    if traverse[0] in exportd:
+        print '*export', ' '.join(sorted(map(str, exportd[traverse[0]])))
+    for leg in traverse[1]:
+        print '%3i %3i %7.2f ' % leg[0:3], sprintd(leg[3]), ' 0'
+    print '*end', traverse[0]
+    
+if e.options.name != '':
+    print
+    print '*end', e.options.name
+
+print
+print '; end of file'
+
+# End of python script

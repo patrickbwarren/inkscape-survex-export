@@ -34,7 +34,7 @@ my (@leg, @xy, @equate, @export);
 my %export_hash;
 
 my ($s, $t, $ignore, $rest, $prev, $xy, $i, $j);
-my ($x, $y, $dx, $dy, $len, $ex, $ey, $nx, $ny, $sf);
+my ($x, $y, $dx, $dy, $len, $scalelen, $ex, $ey, $nx, $ny, $sf);
 my ($traverse, $compass, $nstation, $ntraverse);
 
 my $current_layer = "";
@@ -257,8 +257,8 @@ die "No blue (stroke:#0000ff) scale bar found\n" if ($i == @path_id);
 ($ignore, $xy) = split(/ +/, $path_d[$i], 2);
 @xy = split(/,/, $xy, 2);
 $dx = 0 + $xy[0]; $dy = 0 + $xy[1];
-$len = sqrt($dx*$dx + $dy*$dy);
-$sf = $scale / $len;
+$scalelen = sqrt($dx*$dx + $dy*$dy);
+$sf = $scale / $scalelen;
 
 # Now build the survex traverses.  The survex legs are collected as a
 # multiline string.  Also keep track of stations and absolute (SVG)
@@ -287,8 +287,8 @@ for ($i=0; $i<@path_id; $i++) {
 	    $compass = $north + $rad2deg * 
 		atan2($ex*$dx + $ey*$dy, $nx*$dx + $ny*$dy);
 	    $s .= sprintd($compass); # compass
-	    $s .= "  $clino "; # clino
-	    if ($extra) { $s .= "; SVG vector ($dx, $dy)\n"; }
+	    $s .= "  $clino"; # clino
+	    if ($extra) { $s .= " ; SVG vector ($dx, $dy)\n"; }
 	    else { $s .= "\n"; }
 	}
 	push(@traverse_legs, $s);
@@ -368,7 +368,7 @@ print "; generated ", scalar localtime(), "\n\n";
 
 print "; SVG orientation: ($nx, $ny) is ", sprintd($north), " and";
 print " ($ex, $ey) is ", sprintd($north + 90), "\n";
-print "; SVG scale: $len is $scale" . "m (scale factor $sf)\n";
+print "; SVG scale: $scalelen is $scale" . "m (scale factor $sf)\n";
 print "; SVG contained $ntraverse traverses and $nstation stations\n";
 print "; tolerance for identifying equates = $tol m\n\n";
 
