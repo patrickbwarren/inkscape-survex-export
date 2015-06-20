@@ -16,13 +16,19 @@
       <param name="tol" type="float" precision="2" min="0" max="9999"
 	     _gui-text="Tolerance to equate stations (in m)">0.2</param>
       <param name="layer" type="string" _gui-text="Restrict conversion to a named layer"></param>
-      <param name="name" type="string" _gui-text="Outermost begin-end block name (if not default)"></param>
+    </page>
+    <page name="Colors" _gui-text="Colors">
+      <param name="cpaths" type="string" _gui-text="Color of (poly)lines for export">#ff0000</param>
+      <param name="cnorth" type="string" _gui-text="Color of orientation line">#00ff00</param>
+      <param name="cscale" type="string" _gui-text="Color of scale bar line">#0000ff</param>
+      <param name="info" type="description">(color code is #rrggbb)</param>
     </page>
     <page name="Help" _gui-text="Help">
       <param name="about1" type="description">The following conventions are observed:</param>
-      <param name="about2" type="description"> * red lines are converted to traverses;</param>
+      <param name="about2" type="description"> * red (poly)lines are converted to traverses;</param>
       <param name="about3" type="description"> * a green line represents the orientation (default S to N);</param>
       <param name="about4" type="description"> * a blue line represents the scale bar.</param>
+      <param name="about4" type="description">Default colors can be changed in the Colors tab.</param>
     </page>
   </param>
   <output>

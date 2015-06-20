@@ -7,9 +7,6 @@ Copyright (C) 2015 Patrick B Warren
 
 Email: patrickbwarren@gmail.com
 
-Paper mail: Dr Patrick B Warren, 11 Bryony Way, Birkenhead,
-  Merseyside, CH42 4LY, UK.
-
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 2 of the License, or
@@ -25,15 +22,15 @@ along with this program.  If not, see
 <http://www.gnu.org/licenses/>.
 """
 
-import os
-import sys
-import math
+import os, sys, math
 from time import strftime
 from itertools import combinations
+import inkex, simplepath, simplestyle
 
-import inkex
-import simplepath
-import simplestyle
+# Define a (trivial) exception class to catch path errors
+
+class PathError(Exception):
+    pass
 
 def sprintd(b):
     "Takes a bearing and returns it as string in 000 format"
@@ -50,6 +47,8 @@ def measure(steps):
     dy = steps[1][1][1]-steps[0][1][1]
     dl = math.sqrt(dx*dx + dy*dy)
     return dx, dy, dl
+
+msg = None
 
 e = inkex.Effect()
 
@@ -73,34 +72,44 @@ e.OptionParser.add_option('--layer', action = 'store',
                           type = 'string', dest = 'layer', default = '',
                           help = 'Restrict conversion to a named layer')
 
-e.OptionParser.add_option('--name', action = 'store',
-                          type = 'string', dest = 'name', default = '',
-                          help = 'Outermost begin-end block name')
+e.OptionParser.add_option('--cpaths', action = 'store',
+                          type = 'string', dest = 'cpaths', default = '#ff0000',
+                          help = 'Color of (poly)lines for export (default #ff0000)')
+
+e.OptionParser.add_option('--cnorth', action = 'store',
+                          type = 'string', dest = 'cnorth', default = '#00ff00',
+                          help = 'Color of orientation line (default #00ff00)')
+
+e.OptionParser.add_option('--cscale', action = 'store',
+                          type = 'string', dest = 'cscale', default = '#0000ff',
+                          help = 'Color of scale bar line (default #0000ff)')
 
 e.getoptions()
 
-svgfile = sys.argv[-1]
+# Parse the SVG file which is passed as the last command line argument
 
-e.parse(svgfile)
+e.parse(sys.argv[-1])
+
+# Find out some basic properties
 
 svg = e.document.getroot()
 
 docname = svg.attrib['{%s}docname' % inkex.NSS[u'sodipodi']]
 
+if e.options.layer == '':
+    toplevel = os.path.splitext(docname)[0]
+else:
+    toplevel = e.options.layer
+
 # el = svg.find('.//svg:image', namespaces=inkex.NSS)
 el = svg.find('.//{%(svg)s}image' % {'svg':inkex.NSS[u'svg']})
-absref = el.attrib['{%s}absref' % inkex.NSS[u'sodipodi']]
-imgfile = os.path.split(absref)[1]
 
-# Figure out a name for the top level block, if not set as an option.
+if el is None:
+    imgfile = ''
+else:
+    imgfile = os.path.split(el.attrib['{%s}absref' % inkex.NSS[u'sodipodi']])[1]
 
-if e.options.name == '':
-    if e.options.layer == '':
-        e.options.name = os.path.splitext(docname)[0]
-    else:
-        e.options.name = e.options.layer
-
-# Collect the pertinant path data by parsing the XML SVG file
+# Find all the (poly)lines in the document
 
 # list = svg.findall('.//svg:g/svg:path', namespaces=inkex.NSS)
 lines = svg.findall('.//{%(svg)s}g/{%(svg)s}path' % {'svg':inkex.NSS[u'svg']})
@@ -114,72 +123,84 @@ for line in lines:
     layer = line.getparent().attrib['{%s}label' % inkex.NSS[u'inkscape']]
     paths.append((line.attrib['id'], line.attrib['d'], stroke, layer))
 
-# Figure out the orientation (green is 00ff00)
+# We extract the information from the paths and raise a PathError
+# exception if there is a problem.  This is caught (at the end) and
+# the message (in msg) printed to stderr.
 
-subpaths = filter(lambda path: path[2] == '#00ff00', paths)
+try:
 
-if not subpaths:
-    print 'No green (stroke:#00ff00) orientation vector found'
-    sys.exit(1)
+    if not paths:
+        msg = 'No paths found at all!'
+        raise PathError
+
+# Find the orientation line.
+
+    subpaths = filter(lambda path: path[2] == e.options.cnorth, paths)
+
+    if not subpaths:
+        msg = 'No orientation line found of color %s' % e.options.cnorth
+        raise PathError
 
 # Construct the unit vector (nx, ny) to point along N, and the unit
 # (ex, ey) to point along E.  We correct for north later.
 
-steps = simplepath.parsePath(subpaths[0][1])
-dx, dy, dl = measure(steps)
-nx, ny = dx/dl, dy/dl
-ex, ey = -ny, nx
+    steps = simplepath.parsePath(subpaths[0][1])
+    dx, dy, dl = measure(steps)
+    nx, ny = dx/dl, dy/dl
+    ex, ey = -ny, nx
 
-# Figure out the scale (blue is 0000ff)
+# Find the scale bar line
 
-subpaths = filter(lambda path: path[2] == '#0000ff', paths)
+    subpaths = filter(lambda path: path[2] == e.options.cscale, paths)
 
-if not subpaths:
-    print 'No blue (stroke:#0000ff) scale bar found'
-    sys.exit(1)
+    if not subpaths:
+        msg = 'No scale bar line found of color %s' % e.options.cscale
+        raise PathError
 
 # Calculate the scale factor
-    
-steps = simplepath.parsePath(subpaths[0][1])
-dx, dy, scalelen = measure(steps)
-scalefac = e.options.scale / scalelen
 
-# Now build the survex traverses.  Also keep track of stations and
+    steps = simplepath.parsePath(subpaths[0][1])
+    dx, dy, scalelen = measure(steps)
+    scalefac = e.options.scale / scalelen
+
+# Find the exportable (poly)lines
+
+    paths = filter(lambda path: path[2] == e.options.cpaths, paths)
+
+    if not paths:
+        msg = 'No exportable lines found of color %s' % e.options.cpaths
+        raise PathError
+
+    if e.options.layer != '':
+        paths = filter(lambda path: path[3] == e.options.layer, paths)
+        if not paths:
+            msg = 'No exportable lines found of color %s in layer %s' % (e.options.cpaths, e.options.layer)
+            raise PathError
+
+# Now build the survex traverses.  Keep track of stations and
 # absolute positions to identify equates and exports.
 
-paths = filter(lambda path: path[2] == '#ff0000', paths)
-
-if e.options.layer != '':
-    paths = filter(lambda path: path[3] == e.options.layer, paths)
-
-if not paths:
-    if e.options.layer == '':
-        print 'No red (stroke:#ff0000) paths found'
-    else:
-        print 'No red (stroke:#ff0000) paths found in the layer "%s"' % e.options.layer
-    sys.exit(1)
-
 # Stations is a list of tuples of (traverse_name, station_id, x, y)
-# Traverses is a list of tuples of (traverse_name, legs)
+# Traverses is a list of tuples of (traverse_name, legs), where
 # Legs is a list of tuples of (from_id, to_id, tape, compass)
 
-stations = []
-traverses = []
+    stations = []
+    traverses = []
 
-for path in paths:
-    steps = simplepath.parsePath(path[1])
-    for i, step in enumerate(steps):
-        stations.append((path[0], i, step[1][0], step[1][1]))
-    legs = []
-    for i in range(1, len(steps)):
-        dx, dy, dl = measure(steps[i-1:])
-        tape = scalefac * dl
-        compass = e.options.north + math.degrees(math.atan2(ex*dx+ey*dy, nx*dx+ny*dy))
-        legs.append((i-1, i, tape, compass))
-    traverses.append((path[0], legs))
+    for path in paths:
+        legs = []
+        steps = simplepath.parsePath(path[1])
+        for i, step in enumerate(steps):
+            stations.append((path[0], i, step[1][0], step[1][1]))
+            if i == 0: continue
+            dx, dy, dl = measure([steps[i-1], step])
+            tape = scalefac * dl
+            compass = e.options.north + math.degrees(math.atan2(ex*dx+ey*dy, nx*dx+ny*dy))
+            legs.append((i-1, i, tape, compass))
+        traverses.append((path[0], legs))
 
-ntraverse = len(traverses)
-nstation = len(stations)
+    ntraverse = len(traverses)
+    nstation = len(stations)
 
 # Identify the equates.  This is an O(n^2) pairwise comparison and
 # more efficient methods are available but n should not get too large:
@@ -191,14 +212,14 @@ nstation = len(stations)
 # Equates is a list of tuples of (station, station, distance)
 # where station is a tuple (traverse_name, station_id)
 
-equates = []
+    equates = []
 
-for pair in combinations(stations, 2):
-    dx = pair[0][2] - pair[1][2]
-    dy = pair[0][3] - pair[1][3]
-    dl = scalefac * math.sqrt(dx*dx + dy*dy)
-    if dl < e.options.tol:
-        equates.append((pair[0][0:2], pair[1][0:2], dl))
+    for pair in combinations(stations, 2):
+        dx = pair[0][2] - pair[1][2]
+        dy = pair[0][3] - pair[1][3]
+        dl = scalefac * math.sqrt(dx*dx + dy*dy)
+        if dl < e.options.tol:
+            equates.append((pair[0][0:2], pair[1][0:2], dl))
 
 # Afficianados will notice this is a job only half done.  What we have
 # generated is an (incomplete) list of equivalence relations between
@@ -214,67 +235,74 @@ for pair in combinations(stations, 2):
 # directives so below we take the easy option of using the list of
 # equivalence relations to generate a 1:1 list of equate directives.
 # Fastidiuous people may wish to tidy this up by hand afterwards.
+# Also, there is a pragmatic justification to having only two stations
+# per equivalence statement, since it makes it easier to comment out
+# unwanted equivalences.
 
 # Extract the set of stations required for export from the list of
 # equates.
 
-# Exports is a set of stations where a station is a tuple
+# Exports is a *set* of stations where a station is a tuple
 # (traverse_name, station_id)
 
-exports = set()
+    exports = set()
 
-for equate in equates:
-    exports.add(equate[0])
-    exports.add(equate[1])
+    for equate in equates:
+        exports.add(equate[0])
+        exports.add(equate[1])
 
-# We use a dictionary to keep track of stations which should be
-# exported from a given traverse.
+# Exportd is a dictionary to keep track of stations which should be
+# exported from a given traverse.  The key is the traverse name.  The
+# value is a list of stations to export.  If there are no stations to
+# export then the list is empty (rather than there not being a key).
 
-exportd = dict()
+    exportd = dict()
 
-for traverse_name, station_id in exports:
-    if traverse_name in exportd:
-        exportd[traverse_name].append(station_id)
-    else:
-        exportd[traverse_name] = [station_id]
+    for traverse in traverses: exportd[traverse[0]] = []
+
+    for traverse_name, station_id in exports:
+            exportd[traverse_name].append(station_id)
 
 # If we made it this far we're ready to write the survex file
 
-print '; survex file autogenerated from', docname
-print '; embedded image file name', imgfile
-print '; generated', strftime('%c')
-print
-print '; SVG orientation: (%g, %g) is ' % (nx, ny), sprintd(e.options.north)
-print '; SVG orientation: (%g, %g) is ' % (ex, ey), sprintd(e.options.north + 90)
-print '; SVG scale: %g is %g m, scale factor = %g' % (scalelen, e.options.scale, scalefac)
-print '; SVG contained %i traverses and %i stations' % (ntraverse, nstation)
-print '; tolerance for identifying equates = %g m' % e.options.tol
-print
-print '*data cylpolar from to tape compass depthchange'
+    print '; survex file autogenerated from', docname
+    print '; embedded image file name', imgfile
+    print '; generated', strftime('%c'), '\n'
 
-if e.options.name != '':
-    print
-    print '*begin', e.options.name
+    print '; SVG orientation: (%g, %g) is ' % (nx, ny), sprintd(e.options.north)
+    print '; SVG orientation: (%g, %g) is ' % (ex, ey), sprintd(e.options.north + 90)
+    print '; SVG scale: %g is %g m, scale factor = %g' % (scalelen, e.options.scale, scalefac)
+    print '; SVG contained %i traverses and %i stations' % (ntraverse, nstation)
+    print '; tolerance for identifying equates = %g m\n' % e.options.tol
 
-if equates:
-    print
-for equate in equates:
-    print '*equate %s.%i' % equate[0], '%s.%i' % equate[1], '; separation %0.2f m' % equate[2]
+    print '*data cylpolar from to tape compass depthchange'
 
-for traverse in traverses:
-    print
-    print '*begin', traverse[0]
-    if traverse[0] in exportd:
-        print '*export', ' '.join(sorted(map(str, exportd[traverse[0]])))
-    for leg in traverse[1]:
-        print '%3i %3i %7.2f ' % leg[0:3], sprintd(leg[3]), ' 0'
-    print '*end', traverse[0]
-    
-if e.options.name != '':
-    print
-    print '*end', e.options.name
+    print '\n*begin', toplevel
 
-print
-print '; end of file'
+    if equates:
+        print
+        for equate in equates:
+            print '*equate %s.%i' % equate[0], '%s.%i' % equate[1], '; separation %0.2f m' % equate[2]
+
+    for traverse in traverses:
+        print '\n*begin', traverse[0]
+        if exportd[traverse[0]]:
+            print '*export', ' '.join(sorted(map(str, exportd[traverse[0]])))
+        for leg in traverse[1]:
+            print '%3i %3i %7.2f ' % leg[0:3], sprintd(leg[3]), ' 0'
+        print '*end', traverse[0]
+
+    print '\n*end', toplevel, '\n'
+    print '; end of file'
+
+except: PathError
+
+if msg is not None:
+    sys.stderr.write('Encountered a PathError:\n')
+    sys.stderr.write(msg + '\n')
+    sys.stderr.write('No survex file was generated')
+    sys.exit(1)
+else:
+    sys.exit(0)
 
 # End of python script
