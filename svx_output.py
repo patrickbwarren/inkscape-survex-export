@@ -34,11 +34,9 @@ class PathError(Exception):
 
 def sprintd(b):
     "Takes a bearing and returns it as string in 000 format"
-    while b < 0:
-        b += 360
+    while b < 0: b += 360
     b = int(b + 0.5)
-    while b >= 360:
-        b -= 360
+    while b >= 360: b -= 360
     return '%03i' % b
 
 def measure(steps):
@@ -269,8 +267,8 @@ try:
     print '; embedded image file name', imgfile
     print '; generated', strftime('%c'), '\n'
 
-    print '; SVG orientation: (%g, %g) is ' % (nx, ny), sprintd(e.options.north)
-    print '; SVG orientation: (%g, %g) is ' % (ex, ey), sprintd(e.options.north + 90)
+    print '; SVG orientation: (%g, %g) is' % (nx, ny), sprintd(e.options.north)
+    print '; SVG orientation: (%g, %g) is' % (ex, ey), sprintd(e.options.north + 90)
     print '; SVG scale: %g is %g m, scale factor = %g' % (scalelen, e.options.scale, scalefac)
     print '; SVG contained %i traverses and %i stations' % (ntraverse, nstation)
     print '; tolerance for identifying equates = %g m\n' % e.options.tol
