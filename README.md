@@ -85,7 +85,7 @@ select these is usually small (eg 0.2m) and can be adjusted in the
 in the `*equate` list are automatically exported out of the underlying
 `*begin` and `*end` block by the appropriate `*export` commands.
 
-## Workflow
+### Workflow
 
 A typical workflow using Inkscape might be as follows:
 
@@ -145,7 +145,7 @@ be done to match up the corresponding stations in the different survey
 data files: in particular it is necessary to export these stations
 through the `*begin` and `*end` abstraction layers.
 
-## Examples
+### Examples
 
 The file `loneranger_cpcj6-2.svg` is a tracing of a survey of the Lone
 Ranger series in Link Pot (Easegill) where the PNG image
@@ -165,6 +165,8 @@ line (in m)' parameter in the export dialogue box would be set to
 file contains 176 survey stations, joined by 180 legs, with a total
 length of around 1.5km of passage: it took less than 30 mins of
 drawing in Inkscape to do.
+
+#### Multiple layers
 
 The `loneranger.svg` tracing can also be used to illustrate the use of
 named Inkscape layers to break a survey into smaller pieces.  The
