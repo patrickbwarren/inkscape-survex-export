@@ -203,6 +203,8 @@ to a `.3d` file.
 
 ---
 
+### Copying
+
 Copyright &copy; 2015 Patrick B Warren.
 
 This program is free software: you can redistribute it and/or modify
