@@ -201,8 +201,6 @@ layer in turn).  A similar pair of edits is required in
 `silverstream.svx`.  Then one should be able to process `combined.svx`
 to a `.3d` file.
 
----
-
 ### Copying
 
 Copyright &copy; 2015 Patrick B Warren.
