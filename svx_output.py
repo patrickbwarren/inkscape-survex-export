@@ -39,12 +39,16 @@ def sprintd(b):
     while b >= 360: b -= 360
     return '%03i' % b
 
-def measure(steps):
-    "Measure the distance between first two steps"
-    dx = steps[1][1][0]-steps[0][1][0]
-    dy = steps[1][1][1]-steps[0][1][1]
+def distance(p1, p2):
+    "Calculate the distance between two points"
+    dx = p2[0] - p1[0]
+    dy = p2[1] - p1[1]
     dl = math.sqrt(dx*dx + dy*dy)
     return dx, dy, dl
+
+def measure(steps):
+    "Measure the distance between first two steps"
+    return distance(steps[0][1], steps[1][1])
 
 msg = None
 
@@ -85,6 +89,11 @@ e.OptionParser.add_option('--cscale', action = 'store',
 e.getoptions()
 
 # Parse the SVG file which is passed as the last command line argument
+
+# The commented out 'svg.find' and 'svg.findall' statements below are
+# the correct way to to pass namespaces, however it appears they do not
+# work with Windows.  Therefore the actual statements used are kludges
+# which use a named argument in a string format.
 
 e.parse(sys.argv[-1])
 
@@ -158,7 +167,7 @@ try:
 # Calculate the scale factor
 
     steps = simplepath.parsePath(subpaths[0][1])
-    dx, dy, scalelen = measure(steps)
+    scalelen = measure(steps)[2]
     scalefac = e.options.scale / scalelen
 
 # Find the exportable (poly)lines
@@ -178,7 +187,7 @@ try:
 # Now build the survex traverses.  Keep track of stations and
 # absolute positions to identify equates and exports.
 
-# Stations is a list of tuples of (traverse_name, station_id, x, y)
+# Stations is a list of tuples of (x, y, traverse_name, station_id)
 # Traverses is a list of tuples of (traverse_name, legs), where
 # Legs is a list of tuples of (from_id, to_id, tape, compass)
 
@@ -189,9 +198,9 @@ try:
         legs = []
         steps = simplepath.parsePath(path[1])
         for i, step in enumerate(steps):
-            stations.append((path[0], i, step[1][0], step[1][1]))
+            stations.append((step[1][0], step[1][1], path[0], i))
             if i == 0: continue
-            dx, dy, dl = measure([steps[i-1], step])
+            dx, dy, dl = distance(steps[i-1][1], step[1])
             tape = scalefac * dl
             compass = e.options.north + math.degrees(math.atan2(ex*dx+ey*dy, nx*dx+ny*dy))
             legs.append((i-1, i, tape, compass))
@@ -213,11 +222,9 @@ try:
     equates = []
 
     for pair in combinations(stations, 2):
-        dx = pair[0][2] - pair[1][2]
-        dy = pair[0][3] - pair[1][3]
-        dl = scalefac * math.sqrt(dx*dx + dy*dy)
+        dl = scalefac * distance(pair[0], pair[1])[2]
         if dl < e.options.tol:
-            equates.append((pair[0][0:2], pair[1][0:2], dl))
+            equates.append((pair[0][2:], pair[1][2:], dl))
 
 # Afficianados will notice this is a job only half done.  What we have
 # generated is an (incomplete) list of equivalence relations between
@@ -252,11 +259,11 @@ try:
 # Exportd is a dictionary to keep track of stations which should be
 # exported from a given traverse.  The key is the traverse name.  The
 # value is a list of stations to export.  If there are no stations to
-# export then the list is empty (rather than there not being a key).
+# export then the list is empty (rather than there not being a key),
+# therefore exportd is initialised with a dictionary comprehension
+# over the traverse names.
 
-    exportd = dict()
-
-    for traverse in traverses: exportd[traverse[0]] = []
+    exportd = {traverse[0]:[] for traverse in traverses}
 
     for traverse_name, station_id in exports:
             exportd[traverse_name].append(station_id)
