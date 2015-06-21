@@ -25,7 +25,7 @@
       <param name="about2" type="description"> * red (poly)lines are converted to traverses;</param>
       <param name="about3" type="description"> * a green line represents the orientation (default S to N);</param>
       <param name="about4" type="description"> * a blue line represents the scale (bar).</param>
-      <param name="about4" type="description">Default colors can be changed in the Colors tab.</param>
+      <param name="about5" type="description">Default colors can be changed in the Colors tab.</param>
     </page>
   </param>
   <output>
