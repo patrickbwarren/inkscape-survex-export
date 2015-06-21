@@ -90,9 +90,9 @@ e.getoptions()
 
 # Parse the SVG file which is passed as the last command line argument
 
-# The commented out 'svg.find' and 'svg.findall' statements below are
+# The commented out 'svg.find' and 'svg.findall' statements below show
 # the correct way to to pass namespaces, however it appears they do not
-# work with Windows.  Therefore the actual statements used are kludges
+# work on Windows.  Therefore the actual statements used are kludges
 # which use a named argument in a string format.
 
 e.parse(sys.argv[-1])
@@ -240,9 +240,6 @@ try:
 # directives so below we take the easy option of using the list of
 # equivalence relations to generate a 1:1 list of equate directives.
 # Fastidiuous people may wish to tidy this up by hand afterwards.
-# Also, there is a pragmatic justification to having only two stations
-# per equivalence statement, since it makes it easier to comment out
-# unwanted equivalences.
 
 # Extract the set of stations required for export from the list of
 # equates.
@@ -292,7 +289,7 @@ try:
     for traverse in traverses:
         print '\n*begin', traverse[0]
         if exportd[traverse[0]]:
-            print '*export', ' '.join(sorted(map(str, exportd[traverse[0]])))
+            print '*export', ' '.join(map(str, sorted(exportd[traverse[0]])))
         for leg in traverse[1]:
             print '%3i %3i %7.2f ' % leg[0:3], sprintd(leg[3]), ' 0'
         print '*end', traverse[0]
