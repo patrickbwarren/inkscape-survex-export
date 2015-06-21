@@ -16,7 +16,7 @@ A couple of example surveys (Inkscape traced drawings) are also included.
 
 Copy the files `agr_import.py` and `agr_import.inx` into your local
 Inkscape extension folder (eg `$HOME/.config/inkscape/extensions/` on
-unix, or `%APPDATA%\inkscape\extensions\` on Windows).  That's it --
+unix, or `%APPDATA%\inkscape\extensions\` on Windows).  That's it &ndash;
 there are no additional dependencies and this should work on all
 platforms.
 
@@ -149,15 +149,15 @@ through the `*begin` and `*end` abstraction layers.
 
 The file `loneranger_cpcj6-2.svg` is a tracing of a survey of the Lone
 Ranger series in Link Pot (Easegill) where the PNG image
-(`loneranger_cpcj6-2.png`) -- originally published in CPC Journal 6(2)
--- is taken from [CaveMaps](http://cavemaps.org/ "CaveMaps home
+(`loneranger_cpcj6-2.png`) &ndash; originally published in CPC Journal 6(2)
+&ndash; is taken from [CaveMaps](http://cavemaps.org/ "CaveMaps home
 page").  The scale line end-end distance is 30 m, so the 'length of
 scale line (in m)' parameter in the export dialogue box would be set
 to 30.0.
 
 Similarly, `farcountry_ulsaj89.svg` is a tracing of a survey of Far
 Country in Gaping Gill where the PNG image (`farcountry_ulsaj89..png`)
--- originally published in ULSA '89 Journal -- is also from
+&ndash; originally published in ULSA '89 Journal &ndash; is likewise taken from
 [CaveMaps](http://cavemaps.org/ "CaveMaps home page").  In this case
 the scale line end-end distance is 200 ft, so the 'length of scale
 line (in m)' parameter in the export dialogue box would be set to
