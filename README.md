@@ -177,8 +177,8 @@ scale line (in m)' in the 'Parameters' tab would be set
 to 30.0.
 
 Similarly, `farcountry_ulsaj89.svg` is a tracing of a survey of Far
-Country in Gaping Gill where the PNG image (`farcountry_ulsaj89..png`)
-&ndash; originally published in ULSA '89 Journal &ndash; is likewise taken from
+Country in Gaping Gill where the PNG image (`farcountry_ulsaj89.png`)
+&ndash; originally published in the ULSA '89 Journal &ndash; is likewise taken from
 [CaveMaps](http://cavemaps.org/ "CaveMaps home page").  In this case
 the scale line end-end distance is 200 ft, so the 'Length of scale
 line (in m)' in the 'Parameters' tab would be set to
