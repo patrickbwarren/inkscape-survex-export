@@ -1,7 +1,7 @@
 ## Survey data reconstruction
 
 The tool here adds an [Inkscape](https://inkscape.org/ "Inkscape home
-page") option to save a drawing to [Survex](http://survex.com/ "Survex
+page") option to save a drawing to a [Survex](http://survex.com/ "Survex
 home page") (`.svx`) file.  A typical workflow starting from a
 scanned drawn-up survey image is described below.  Use-cases might
 include:
@@ -31,8 +31,8 @@ Copy&hellip;'.  If selected this brings up a dialogue box, with:
     + bearing of orientation line (in degrees);
     + tolerance to equate stations (in m);
     + an option to restrict conversion to a named layer;
-* options to change the default line colors in the 'Colors' tab;
-* a reminder of the expected drawing conventions in the 'Help' tab.
+* in the 'Colors' tab, options to change the default line colors;
+* in the 'Help' tab, a reminder of the expected drawing conventions.
 
 Usually the drawing will be made by tracing over a scannned image of a
 drawn-up survey.  The following conventions are observed:
