@@ -20,6 +20,8 @@ unix, or `%APPDATA%\inkscape\extensions\` on Windows).  That's it &ndash;
 there are no additional dependencies and this should work on all
 platforms.
 
+The code has been tested to work with Inkscape 0.91 (r13725).
+
 ### Usage
 
 In Inkscape, the option to save to a Survex (`*.svx`) file should now
