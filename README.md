@@ -143,9 +143,7 @@ northing, was made precisely to accommodate this.
 
 5. Depth information can be added by hand by editing the `.svx` file.
 A convenient way to do this is to change the survey data type to
-
-`*data cylpolar from to tape compass depthchange`
-
+`*data cylpolar from to tape compass depthchange`.
 The final column (which contained zero `clino` entries) can be edited
 to reflect the depth change between survey stations whilst preserving
 the `tape` and `compass` entries, which are presumably correct if
