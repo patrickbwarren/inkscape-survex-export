@@ -8,13 +8,14 @@ include:
 
 * producing a plausible length estimate for a drawn-up survey;
 * generating a skeleton from an existing drawn-up survey, to hang data
-off in a resurvey project.
+off in a resurvey project;
+* giving 'armchair cavers' something useful to do.
 
 A couple of example surveys (Inkscape traced drawings) are also included.
 
 ### Installation
 
-Copy the files `agr_import.py` and `agr_import.inx` into your local
+Copy the files `svx_export.py` and `svx_export.inx` into your local
 Inkscape extension folder (eg `$HOME/.config/inkscape/extensions/` on
 unix, or `%APPDATA%\inkscape\extensions\` on Windows).  That's it &ndash;
 there are no additional dependencies and this should work on all
