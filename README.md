@@ -42,11 +42,11 @@ drawn-up survey.  The following conventions are observed:
 * by default, a single blue line line determines the scale (eg from the scale bar);
 
 Lines of any other color are ignored, as are other drawing objects.
-The default colors can be changed in the 'Colors' tab in the export
-dialogue box.  If an Inkscape layer is specified by name in the
+The default colors can be changed in the 'Colors' tab.  
+If an Inkscape layer is specified by name in the
 'Parameters' tab, then only those (red) (poly)lines belonging to that
-layer are exported (the orientation and scale bar are picked up
-irrespective of the layer).
+layer are exported.  The orientation and scale lines are picked up
+irrespective of the layer.
 
 Traverses generated from (poly)lines are captured in separate `*begin`
 and `*end` blocks in the survex file.  The Inkscape path id is used for the
@@ -63,13 +63,13 @@ In this format:
 
 * The `from` and `to` stations are generated automatically.
 
-* The `tape` length is generated using the scale line as reference.
-It will usually be traced over a scale bar in the survey.  The true
+* The `tape` length is generated using the scale line as reference,
+which will usually be traced over a scale bar in the survey.  The true
 length that the scale line represents is specified in the 'Parameters'
 tab in the export dialogue box.
 
 * The `compass` bearing is generated using the orientation line as
-reference.  It will usually be traced over a North arrow in the survey
+reference, which for example will be traced over a North arrow in the survey
 (in the direction S to N).  If a North arrow is not used the true
 bearing represented by the orientation line can be specified in the
 'Parameters' tab in the export dialogue box.
@@ -101,9 +101,7 @@ A typical workflow using Inkscape might be as follows:
       survey station until they are coincident (within the tolerance);
 * save the Inkscape file to preserve metadata;
 * do File &rarr; Save a Copy&hellip;, select 'Survex file (`*.svx`)', choose a file name, and click on Save;
-* fill in the options in the 'Parameters' tab with (at least) the length of the scale bar, click on OK;
-* the resulting survex file is processable to a `.3d` file (eg with `cavern` in unix,
-  or by right-clicking and selecting 'Process' in Windows).
+* fill in the options in the 'Parameters' tab with (at least) the length of the scale bar, click on OK to generate the `.svx` file;
 
 Notes:
 
@@ -111,7 +109,7 @@ Notes:
 As&hellip;', since it prevents Inkscape from thinking that the actual
 Inkscape drawing is of file type `.svx`.
 
-1. If on processing the `.svx` file, Survex complains with an error
+1. If Survex complains with an error
 'Survey not all connected to fixed stations', then it is most likely a
 pair of supposedly coincident survey stations are not close enough
 together (they may have been overlooked).  To diagnose this:
@@ -124,8 +122,9 @@ entries if more than two path nodes are at the same position.  The
 fastidious can correct this by hand afterwards but it doesn't affect
 the processing of the survex file.
 
-3. It is not recommended to correct magnetic N using the 'bearing'
-setting in the 'Parameters' tab in the export dialogue box.  Instead
+3. It is suggested that magnetic N _not_ be corrected for 
+using the 'bearing'
+setting in the 'Parameters' tab.  Instead
 add a `*calibrate declination <angle>` line by hand to the top of the
 survex file, where the angle is positive for declination W. The [NOAA
 website](http://www.ngdc.noaa.gov/geomag-web/ "NOAA geomagnetic
@@ -143,7 +142,7 @@ master file as illustrated below. To facilitate this, the top level
 name derived from the docname.  However some hand editing still has to
 be done to match up the corresponding stations in the different survey
 data files: in particular it is necessary to export these stations
-through the `*begin` and `*end` abstraction layers.
+through the `*begin` and `*end` blocks in each file.
 
 ### Examples
 
@@ -151,16 +150,16 @@ The file `loneranger_cpcj6-2.svg` is a tracing of a survey of the Lone
 Ranger series in Link Pot (Easegill) where the PNG image
 (`loneranger_cpcj6-2.png`) &ndash; originally published in CPC Journal 6(2)
 &ndash; is taken from [CaveMaps](http://cavemaps.org/ "CaveMaps home
-page").  The scale line end-end distance is 30 m, so the 'length of
-scale line (in m)' parameter in the export dialogue box would be set
+page").  The scale line end-end distance is 30 m, so 'Length of
+scale line (in m)' in the 'Parameters' tab would be set
 to 30.0.
 
 Similarly, `farcountry_ulsaj89.svg` is a tracing of a survey of Far
 Country in Gaping Gill where the PNG image (`farcountry_ulsaj89..png`)
 &ndash; originally published in ULSA '89 Journal &ndash; is likewise taken from
 [CaveMaps](http://cavemaps.org/ "CaveMaps home page").  In this case
-the scale line end-end distance is 200 ft, so the 'length of scale
-line (in m)' parameter in the export dialogue box would be set to
+the scale line end-end distance is 200 ft, so the 'Length of scale
+line (in m)' in the 'Parameters' tab would be set to
 60.96.  To get an idea of the work involved here, the generated Survex
 file contains 176 survey stations, joined by 180 legs, with a total
 length of around 1.5km of passage: it took less than 30 mins of
