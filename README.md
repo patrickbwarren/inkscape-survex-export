@@ -33,6 +33,8 @@ drawn-up survey.  The following conventions are observed:
 * by default, a single blue line line determines the scale (eg from the scale bar);
 
 Lines of any other color are ignored, as are other drawing objects.
+The default colors can be changed (see below), for example to red-blue-black 
+if red-green-blue gives problems.
 
 In Inkscape, the option to save to a Survex (`*.svx`) file should
 appear under 'File &rarr; Save As&hellip;' or 'File &rarr; Save a
