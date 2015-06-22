@@ -20,7 +20,8 @@ unix, or `%APPDATA%\inkscape\extensions\` on Windows).  That's it &ndash;
 there are no additional dependencies and this should work on all
 platforms.
 
-The code has been tested to work with Inkscape 0.91 (r13725).
+The code has been tested to work with Inkscape 0.91 (r13725), on both
+Linux and Windows.
 
 ### Usage
 
@@ -59,7 +60,7 @@ restricted to a given layer, the name of that layer).
 
 Within each traverse, survey legs are generated in the format
 
-`*data cylpolar from to tape compass depthchange`
+`*data normal from to tape compass clino`
 
 In this format:
 
@@ -76,9 +77,7 @@ reference, which for example will be traced over a North arrow in the survey
 bearing represented by the orientation line can be specified in the
 'Parameters' tab in the export dialogue box.
 
-* The `depthchange` reading is set to zero since usually the tracing will be
-made of a survey in plan view (hence the choice to use the `cylpolar`
-format).  Depth information may subsequently be added by hand.
+* The `clino` reading is set to zero.
 
 Survey stations that are within a certain distance of each other are
 given as an `*equate` list at the start.  The distance tolerance to
@@ -86,6 +85,13 @@ select these is usually small (eg 0.2m) and can be adjusted in the
 'Parameters' tab in the export dialogue box.  Stations which feature
 in the `*equate` list are automatically exported out of the underlying
 `*begin` and `*end` block by the appropriate `*export` commands.
+
+The python script `svx_output.py` can be used standalone at the
+command line, however the required modules `inkex.py`,
+`simplepath.py`, and `simplestyle.py`, in the Inkscape global
+extensions direcory, should be made discoverable.  The simplest way is
+to copy these to the same directory that contains `svx_output.py`.
+Command line options can be found by doing `./svx_output.py --help`.
 
 ### Workflow
 
@@ -107,11 +113,11 @@ A typical workflow using Inkscape might be as follows:
 
 Notes:
 
-0. 'File &rarr; Save a Copy&hellip;' is preferred to 'File &rarr; Save
+1. 'File &rarr; Save a Copy&hellip;' is preferred to 'File &rarr; Save
 As&hellip;', since it prevents Inkscape from thinking that the actual
 Inkscape drawing is of file type `.svx`.
 
-1. If Survex complains with an error
+2. If Survex complains with an error
 'Survey not all connected to fixed stations', then it is most likely a
 pair of supposedly coincident survey stations are not close enough
 together (they may have been overlooked).  To diagnose this:
@@ -119,12 +125,12 @@ together (they may have been overlooked).  To diagnose this:
     + open the `.svx` file in a text editor and examine the list of `*equate` commands to see which stations were too far apart;
     + return to Inkscape and fix the problem.
 
-2. The automatically generated `*equate` list may contain superfluous
+3. The automatically generated `*equate` list may contain superfluous
 entries if more than two path nodes are at the same position.  The
 fastidious can correct this by hand afterwards but it doesn't affect
 the processing of the survex file.
 
-3. It is suggested that magnetic N _not_ be corrected for 
+4. It is suggested that magnetic N _not_ be corrected for 
 using the 'bearing'
 setting in the 'Parameters' tab.  Instead
 add a `*calibrate declination <angle>` line by hand to the top of the
@@ -135,16 +141,27 @@ location and year.  The design choice to export legs as `tape` and
 `compass` readings, rather than as cartesian changes in easting and
 northing, was made precisely to accommodate this.
 
-4. A large survey can be dealt with by partitioning the (red)
+5. Depth information can be added by hand by editing the `.svx` file.
+A convenient way to do this is to change the survey data type to
+
+`*data cylpolar from to tape compass depthchange`
+
+The final column (which contained zero `clino` entries) can be edited
+to reflect the depth change between survey stations whilst preserving
+the `tape` and `compass` entries, which are presumably correct if
+taken from a drawn-up survey in plan view.
+
+6. A large survey can be dealt with by partitioning the (red)
 (poly)lines into different, named layers, keeping the same scale bar
 and orientation line, but generating a different survex files for each
 named layer.  These survex files can be stitched together using a
 master file as illustrated below. To facilitate this, the top level
 `*begin` and `*end` block is given the name of the layer rather than a
-name derived from the docname.  However some hand editing still has to
-be done to match up the corresponding stations in the different survey
-data files: in particular it is necessary to export these stations
-through the `*begin` and `*end` blocks in each file.
+name derived from the docname (and by convention this should also be
+the name of the `.svx` file).  Some hand editing has to be done to
+match up the corresponding stations in the different survey data
+files: in particular it is necessary to export these stations through
+the `*begin` and `*end` blocks in each file.
 
 ### Examples
 

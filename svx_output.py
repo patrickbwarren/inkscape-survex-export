@@ -276,7 +276,7 @@ try:
     print '; SVG contained %i traverses and %i stations' % (ntraverse, nstation)
     print '; tolerance for identifying equates = %g m\n' % e.options.tol
 
-    print '*data cylpolar from to tape compass depthchange'
+    print '*data normal from to tape compass clino'
 
     print '\n*begin', toplevel
 
