@@ -25,7 +25,16 @@ Linux and Windows.
 
 ### Usage
 
-In Inkscape, the option to save to a Survex (`*.svx`) file should now
+Usually the drawing will be made by tracing over a scannned image of a
+drawn-up survey.  The following conventions are observed:
+
+* by default, all red (poly)lines are converted to traverses in the survex file;
+* by default, a single green line line determines the orientation (default S to N);
+* by default, a single blue line line determines the scale (eg from the scale bar);
+
+Lines of any other color are ignored, as are other drawing objects.
+
+In Inkscape, the option to save to a Survex (`*.svx`) file should
 appear under 'File &rarr; Save As&hellip;' or 'File &rarr; Save a
 Copy&hellip;'.  If selected this brings up a dialogue box, with:
 
@@ -37,15 +46,7 @@ Copy&hellip;'.  If selected this brings up a dialogue box, with:
 * in the 'Colors' tab, options to change the default line colors;
 * in the 'Help' tab, a reminder of the expected drawing conventions.
 
-Usually the drawing will be made by tracing over a scannned image of a
-drawn-up survey.  The following conventions are observed:
-
-* by default, all red (poly)lines are converted to traverses in the survex file;
-* by default, a single green line line determines the orientation (default S to N);
-* by default, a single blue line line determines the scale (eg from the scale bar);
-
-Lines of any other color are ignored, as are other drawing objects.
-The default colors can be changed in the 'Colors' tab.  If an Inkscape
+If an Inkscape
 layer is specified by name in the 'Parameters' tab, then only those
 (red) (poly)lines belonging to that layer are exported.  The
 orientation and scale lines are picked up irrespective of the layer.
