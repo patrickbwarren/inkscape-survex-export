@@ -107,8 +107,8 @@ A typical workflow using Inkscape might be as follows:
     + adjust the positions of nodes which are supposed to represent the same
       survey station until they are coincident (within the tolerance);
 * save the Inkscape file to preserve metadata;
-* do File &rarr; Save a Copy&hellip;, select 'Survex file (`*.svx`)', choose a file name, and click on Save;
-* fill in the options in the 'Parameters' tab with (at least) the length of the scale bar, click on OK to generate the `.svx` file;
+* do File &rarr; Save a Copy&hellip; and select 'Survex file (`*.svx`)': choose a file name and click on Save;
+* fill in the options in the 'Parameters' tab with (at least) the length of the scale bar and click on OK to generate the `.svx` file;
 
 Notes:
 
