@@ -17,11 +17,11 @@ A couple of example surveys (Inkscape traced drawings) are also included.
 
 Copy the files `svx_export.py` and `svx_export.inx` into your local
 Inkscape extension folder (eg `$HOME/.config/inkscape/extensions/` on
-unix, or `%APPDATA%\inkscape\extensions\` on Windows).  That's it &ndash;
-there are no additional dependencies and this should work on all
-platforms.
+unix, or `%APPDATA%\inkscape\extensions\` on Windows).  
 
-The code has been tested to work with Inkscape 0.91 (r13725), on both
+That's it &ndash;
+there are no additional dependencies and this should work on most
+platforms.  In particular it has been tested to work with Inkscape 0.91 (r13725), on both
 Linux and Windows.
 
 ### Usage
