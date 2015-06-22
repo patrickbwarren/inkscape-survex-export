@@ -256,9 +256,7 @@ try:
 # Exportd is a dictionary to keep track of stations which should be
 # exported from a given traverse.  The key is the traverse name.  The
 # value is a list of stations to export.  If there are no stations to
-# export then the list is empty (rather than there not being a key),
-# therefore exportd is initialised with a dictionary comprehension
-# over the traverse names.
+# export then the list is empty (rather than there not being a key).
 
     exportd = dict()
     for traverse in traverses: exportd[traverse[0]] = []
