@@ -260,8 +260,9 @@ try:
 # therefore exportd is initialised with a dictionary comprehension
 # over the traverse names.
 
-    exportd = {traverse[0]:[] for traverse in traverses}
-
+    exportd = dict()
+    for traverse in traverses: exportd[traverse[0]] = []
+    
     for traverse_name, station_id in exports:
             exportd[traverse_name].append(station_id)
 
