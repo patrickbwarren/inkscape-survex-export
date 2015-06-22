@@ -45,11 +45,10 @@ drawn-up survey.  The following conventions are observed:
 * by default, a single blue line line determines the scale (eg from the scale bar);
 
 Lines of any other color are ignored, as are other drawing objects.
-The default colors can be changed in the 'Colors' tab.  
-If an Inkscape layer is specified by name in the
-'Parameters' tab, then only those (red) (poly)lines belonging to that
-layer are exported.  The orientation and scale lines are picked up
-irrespective of the layer.
+The default colors can be changed in the 'Colors' tab.  If an Inkscape
+layer is specified by name in the 'Parameters' tab, then only those
+(red) (poly)lines belonging to that layer are exported.  The
+orientation and scale lines are picked up irrespective of the layer.
 
 Traverses generated from (poly)lines are captured in separate `*begin`
 and `*end` blocks in the survex file.  The Inkscape path id is used for the
@@ -86,11 +85,11 @@ select these is usually small (eg 0.2m) and can be adjusted in the
 in the `*equate` list are automatically exported out of the underlying
 `*begin` and `*end` block by the appropriate `*export` commands.
 
-The python script `svx_output.py` can be used standalone at the
-command line, however the required modules `inkex.py`,
-`simplepath.py`, and `simplestyle.py`, in the Inkscape global
-extensions direcory, should be made discoverable.  The simplest way is
-to copy these to the same directory that contains `svx_output.py`.
+The python script `svx_output.py` can also be used standalone at the
+command line.  The required modules in the Inkscape global extensions
+direcory should be made discoverable though: these are `inkex.py`,
+`simplepath.py`, and `simplestyle.py`.  The simplest way is to copy
+these `.py` files to the same directory that contains `svx_output.py`.
 Command line options can be found by doing `./svx_output.py --help`.
 
 ### Workflow
@@ -143,11 +142,11 @@ northing, was made precisely to accommodate this.
 
 5. Depth information can be added by hand by editing the `.svx` file.
 A convenient way to do this is to change the survey data type to
-`*data cylpolar from to tape compass depthchange`.
-The final column (which contained zero `clino` entries) can be edited
-to reflect the depth change between survey stations whilst preserving
-the `tape` and `compass` entries, which are presumably correct if
-taken from a drawn-up survey in plan view.
+`*data cylpolar from to tape compass depthchange`.  The final column
+(which originally contained zero `clino` entries) can be edited to
+reflect the depth change between survey stations, whilst preserving
+the `tape` and `compass` entries which are presumably correct if taken
+from a drawn-up survey in plan view.
 
 6. A large survey can be dealt with by partitioning the (red)
 (poly)lines into different, named layers, keeping the same scale bar
