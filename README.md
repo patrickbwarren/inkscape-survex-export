@@ -109,7 +109,7 @@ A typical workflow using Inkscape might be as follows:
 * save the Inkscape file to preserve metadata;
 * do File &rarr; Save a Copy&hellip; and select 'Survex file (`*.svx`)';
 * choose a file name and click on Save;
-* fill in the options in the 'Parameters' tab with (at least) the length of the scale bar;
+* in the dialogue box that appears, in the 'Parameters' tab, fill in at least the length of the scale line to correspond to the length of the traced scale bar;
 * click on OK to generate the `.svx` file;
 
 Notes:
