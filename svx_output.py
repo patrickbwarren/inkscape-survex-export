@@ -101,7 +101,12 @@ e.parse(sys.argv[-1])
 
 svg = e.document.getroot()
 
-docname = svg.attrib['{%s}docname' % inkex.NSS[u'sodipodi']]
+s = '{%s}docname' % inkex.NSS[u'sodipodi']
+
+if s in svg.attrib:
+    docname = svg.attrib[s]
+else:
+    docname = 'untitled'
 
 if e.options.layer == '':
     toplevel = os.path.splitext(docname)[0]
@@ -276,14 +281,14 @@ try:
     print '; SVG contained %i traverses and %i stations' % (ntraverse, nstation)
     print '; tolerance for identifying equates = %g m\n' % e.options.tol
 
-    print '*data normal from to tape compass clino'
-
     print '\n*begin', toplevel
 
     if equates:
         print
         for equate in equates:
             print '*equate %s.%i' % equate[0], '%s.%i' % equate[1], '; separation %0.2f m' % equate[2]
+
+    print '\n*data normal from to tape compass clino'
 
     for traverse in traverses:
         print '\n*begin', traverse[0]
