@@ -39,7 +39,7 @@ if red-green-blue gives problems.
 
 In Inkscape, the option to save to a Survex (`*.svx`) file should
 appear under 'File &rarr; Save As&hellip;' or 'File &rarr; Save a
-Copy&hellip;'.  If selected this brings up a dialogue box, with:
+Copy&hellip;'.  This brings up a dialogue box, with:
 
 * in the 'Parameters' tab:
     + length of scale line (in m);
@@ -101,9 +101,9 @@ Command line options can be found by doing `./svx_output.py --help`.
 A typical workflow using Inkscape might be as follows:
 
 * start a new Inkscape document;
-* import (link or embed) a scanned survey as an image and
-  lock the layer that contains this image;
-* create a new layer above this layer to work in:
+* import (link or embed) a scanned survey as an image;
+* optionally, lock the layer containing the image and create a new layer to work in;
+* then do the following:
     + trace the scale bar in _blue_, making a note of the distance
       this represents,
     + trace an orientation feature in _green_ (eg a North arrow, from S to N),
