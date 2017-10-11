@@ -7,6 +7,7 @@ scanned drawn-up survey image is described below.  Use-cases might
 include:
 
 * producing a plausible length estimate for a drawn-up survey;
+* georeferencing an image of a drawn-up survey;
 * generating a skeleton from an existing drawn-up survey, to hang data
 off in a resurvey project;
 * giving 'armchair cavers' something useful to do.
