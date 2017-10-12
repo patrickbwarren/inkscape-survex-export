@@ -7,7 +7,7 @@ scanned drawn-up survey image is described below.  Use-cases might
 include:
 
 * producing a plausible length estimate for a drawn-up survey;
-* georeferencing an image of a drawn-up survey;
+* georeferencing a drawn-up survey (see below);
 * generating a skeleton from an existing drawn-up survey, to hang data
 off in a resurvey project;
 * giving 'armchair cavers' something useful to do.
@@ -222,6 +222,95 @@ statement (both are needed, as stations must be exported from each
 layer in turn).  A similar pair of edits is required in
 `silverstream.svx`.  Then one should be able to process `combined.svx`
 to a `.3d` file.
+
+### Georeferencing
+
+Georeferencing refers to assigning a co-ordinate system to a map, in
+this case for example to a scanned hard copy of a survey.  The actual
+steps require identifying so-called Ground Control Points (GCPs),
+which are identifiable features on the map for which actual
+co-ordinates are known.  If the survey has a grid, or multiple
+entrances, these can be used.  Frequently though the survey may only
+have one entrance, and just a scale bar and North arrow.  In this case
+one can use the survex export plugin to generate co-ordinates for
+additional GCPs in the cave.  To do this one can either trace over the
+passages and export the survex file, or more simply trace a fake
+centerline which simply connects the extra GCPs to the entrance.
+Check the generated `.svx` file can be processed, and then add a
+`*fix` command to fix the entrance GCP to the known co-ordinates.
+Processing this file  allows you
+to extract the co-ordinates of the GCPs.
+
+For example suppose one wanted to georeference the ULSA 1989 Mossdale
+survey, which is included here as `mossdale_ulsaj89.png`.  The
+original of this was downloaded from [CaveMaps](http://cavemaps.org/ "CaveMaps home page").  This version has some material cropped out and
+has been reduced to a binary (2-colour) image.  The image is imported into
+inkscape and the scale bar (500ft = 152.4m) and North arrow traced
+(conveniently, the survey uses true North, so magnetic declination
+need not be corrected).  We then add a single line connecting the
+entrance to a distant identifiable feature in the cave, for example
+the small chamber shown at the end of the Stream End Cave passage.
+This line will be exported as the survex centerline.
+The resulting inkscape drawing is included here as `mossdale_ulsaj89.svg`.
+The exported survex file, modified as described below, is `mossdale_ulsaj89.svx`.
+
+We now need to establish the co-ordinates of the entrance, as the
+first GCP.  To do this one can of course make a site visit with a GPS,
+or perhaps more conveniently from the comfort of one's home visit the
+[MagicMap](http://www.magic.gov.uk/magicmap.aspx "Magic Map") website and
+use the 'Where am I?' option to find the entrance is at `(401667,
+469779)` in the OSGB36 CRS (co-ordinate reference system).  These
+figures are the full Ordnance Survey 12-figure grid reference
+(easting, northing).  The 6-figure NGR SE 016697 given on the survey
+is correct of course, but as it locates the entrance only to within a
+100m square it's not really accurate enough.  Also, for georeferencing
+with respect to OSGB36, it is more-or-less essential to use the full numeric grid
+representation and not a truncated version.  An alternative to using
+Magic Map is to use Google Earth or Google Maps with satellite imagery
+to find the WGS84 location of the entrance is 54° 7' 26" N and 1° 58' 34"
+W.  These co-ordinates can then be converted
+to the OSGB36 CRS.
+
+We add these entrance co-ordinates to the survex file which now contains
+```
+*begin mossdale_ulsaj89
+*entrance entrance
+*fix entrance 401667 469779 425
+*equate entrance path4342.0
+
+*data normal from to tape compass clino
+
+*begin path4342
+*export 0
+  0   1 1383.46  113  0
+*end path4342
+
+*end mossdale_ulsaj89 
+```
+Perhaps a little fussily, I have adopted the convention of exporting
+the entrance (station `0` in `path4342`) out to the top level, and
+equating it to a new station named `entrance`.  Also the altitude
+(1400ft = 425m), although irrelevant for present purposes, *is* taken
+from the survey.  On processing by `cavern` and `3dtopos` the result
+is
+```
+( Easting, Northing, Altitude )
+(401667.00, 469779.00,   425.00 ) mossdale_ulsaj89.entrance
+(401667.00, 469779.00,   425.00 ) mossdale_ulsaj89.path4342.0
+(402940.48, 469238.44,   425.00 ) mossdale_ulsaj89.path4342.1
+```
+(saved as `mossdale_ulsaj89.pos`).  The last line gives the
+co-ordinates of the GCP at the end of Stream End Cave.  We can now
+proceed to georeference the survey, for example using [QGIS](http://www.qgis.org/ "QGIS website").  One point
+to note is that the relevant CRS is
+```
+OSGB 1936 / British National Grid    EPSG:27700
+```
+Note that it's the European Petroleum Survey Group (EPSG) number that
+really identifies this.  The final georeferenced survey, here provided
+as `mossdale_ulsaj89.tiff.gz` (gzipped GeoTIFF format) can be
+directly imported into a GIS platform such as [QGIS](http://www.qgis.org/ "QGIS website"), and superimposed on Google
+satellite imagery, or the Environment Agency LIDAR data, for example.
 
 ### Copying
 
