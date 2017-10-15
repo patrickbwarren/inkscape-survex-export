@@ -306,14 +306,14 @@ to note is that the relevant CRS is
 ```
 OSGB 1936 / British National Grid    EPSG:27700
 ```
-Note that it's the European Petroleum Survey Group (EPSG) number that
+It is the European Petroleum Survey Group (EPSG) number that
 really identifies this.  The final georeferenced survey, here provided
-as `mossdale_ulsaj89.tiff` (gzipped GeoTIFF format) can be
+as `mossdale_ulsaj89.tiff` (GeoTIFF format) can be
 directly imported into a GIS platform such as [QGIS](http://www.qgis.org/ "QGIS website"), and superimposed on Google
 satellite imagery, or the Environment Agency LIDAR data, for example.
 
-The centreline data can be imported into a GIS platform by exporting
-to DXF from aven, make sure to select the "Full coordinates" option.
+The survex centreline data can be imported into a GIS platform by exporting
+to DXF from aven, making sure to select the "Full coordinates" option.
 The grid in this `.dxf` file can be removed by running the following
 GDAL command, in which infile and outfile can be the same:
 ```
