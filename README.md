@@ -256,26 +256,24 @@ The exported survex file, modified as described below, is `mossdale_ulsaj89.svx`
 
 We now need to establish the co-ordinates of the entrance, as the
 first GCP.  To do this one can of course make a site visit with a GPS,
-or perhaps more conveniently from the comfort of one's home visit the
+or perhaps more conveniently make a virtual site visit using
 [MagicMap](http://www.magic.gov.uk/magicmap.aspx "Magic Map") website and
-use the 'Where am I?' option to find the entrance is at `(401667,
-469779)` in the OSGB36 CRS (co-ordinate reference system).  These
-figures are the full Ordnance Survey 12-figure grid reference
-(easting, northing).  The 6-figure NGR SE 016697 given on the survey
+use the 'Where am I?' option to find the entrance is at
+`(E, N) = (401667, 469779)`.
+This is
+the full 12-figure grid reference in the OSGB36 co-ordinate reference system.
+The 6-figure NGR SE 016697 given on the survey
 is correct of course, but as it locates the entrance only to within a
-100m square it's not really accurate enough.  Also, for georeferencing
-with respect to OSGB36, it is more-or-less essential to use the full numeric grid
-representation and not a truncated version.  An alternative to using
+100m square it's not really accurate enough.  An alternative to using
 Magic Map is to use Google Earth or Google Maps with satellite imagery
-to find the WGS84 location of the entrance is 54° 7' 26" N and 1° 58' 34"
-W.  These co-ordinates can then be converted
-to the OSGB36 CRS.
+to find the WGS84 location of the entrance is `(N, W) = (54°7'26", 1°58'34")`.
+These can then be converted to OSGB36 co-ordinates.
 
 We add these entrance co-ordinates to the survex file which now contains
 ```
 *begin mossdale_ulsaj89
-*entrance entrance
 *fix entrance 401667 469779 425
+*entrance entrance
 *equate entrance path4342.0
 
 *data normal from to tape compass clino
@@ -287,11 +285,10 @@ We add these entrance co-ordinates to the survex file which now contains
 
 *end mossdale_ulsaj89 
 ```
-Perhaps a little fussily, I have adopted the convention of exporting
+I have adopted the convention of exporting
 the entrance (station `0` in `path4342`) out to the top level, and
 equating it to a new station named `entrance`.  Also the altitude
-(1400ft = 425m), although irrelevant for present purposes, *is* taken
-from the survey.  On processing by `cavern` and `3dtopos` the result
+(1400ft = 425m) has been added, although irrelevant for present purposes.  On processing by `cavern` and `3dtopos` the result
 is
 ```
 ( Easting, Northing, Altitude )
@@ -302,23 +299,42 @@ is
 (saved as `mossdale_ulsaj89.pos`).  The last line gives the
 co-ordinates of the GCP at the end of Stream End Cave.  We can now
 proceed to georeference the survey, for example using [QGIS](http://www.qgis.org/ "QGIS website").  One point
-to note is that the relevant CRS is
+to note is that the relevant co-ordinate system is
 ```
 OSGB 1936 / British National Grid    EPSG:27700
 ```
 It is the European Petroleum Survey Group (EPSG) number that
 really identifies this.  The final georeferenced survey, here provided
-as `mossdale_ulsaj89.tiff` (GeoTIFF format) can be
+as `mossdale_ulsaj89.tiff` in [GeoTIFF](https://en.wikipedia.org/wiki/GeoTIFF "GeoTIFF on Wikipedia" format, can be
 directly imported into a GIS platform such as [QGIS](http://www.qgis.org/ "QGIS website"), and superimposed on Google
 satellite imagery, or the Environment Agency LIDAR data, for example.
 
-The survex centreline data can be imported into a GIS platform by exporting
-to DXF from aven, making sure to select the "Full coordinates" option.
-The grid in this `.dxf` file can be removed by running the following
-GDAL command, in which infile and outfile can be the same:
+The survex centreline data can also be imported into a GIS platform by using
+the `cad3d` survex tool to export the `.3d` file to `.dxf`.  The centreline in
+this `.dxf` file can be extracted for example by running the following
+[GDAL](http://www.gdal.org/ "GDAL website") command, which generates a
+[GeoJSON](http://geojson.org/ "GeoJSON website") file:
 ```
-ogr2ogr -f "DXF" outfile.dxf infile.dxf -where "Layer='CentreLine'"
+ogr2ogr -f "GeoJSON" outfile.json infile.dxf -where "Layer='CentreLine'"
 ```
+
+As an alternative to the full 12-figure OS grid reference, one
+can use the more conventional NGR 10-figure grid reference
+provided the co-ordinate
+systems are specified in the `.svx` file.  For example, from our work above
+the Mossdale entrance
+is at NGR SE 01667 69779, and the following can be used
+```
+*cs OSGB:SE
+*cs out EPSG:27700
+
+*begin mossdale_ulsaj89
+*fix entrance 01667 69779 425
+```
+Processing this file (`mossdale_ulsaj89.svx`)
+by `cavern` and `3dtopos` gives the same result as above.
+The survex documentation is a bit vague on how to use the `*cs`
+command so this is probably not the only way to do this.
 
 ### Copying
 
