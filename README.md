@@ -305,7 +305,7 @@ OSGB 1936 / British National Grid    EPSG:27700
 ```
 It is the European Petroleum Survey Group (EPSG) number that
 really identifies this.  The final georeferenced survey, here provided
-as `mossdale_ulsaj89.tiff` in [GeoTIFF](https://en.wikipedia.org/wiki/GeoTIFF "GeoTIFF on Wikipedia" format, can be
+as `mossdale_ulsaj89.tiff` in [GeoTIFF](https://en.wikipedia.org/wiki/GeoTIFF "GeoTIFF on Wikipedia") format, can be
 directly imported into a GIS platform such as [QGIS](http://www.qgis.org/ "QGIS website"), and superimposed on Google
 satellite imagery, or the Environment Agency LIDAR data, for example.
 
