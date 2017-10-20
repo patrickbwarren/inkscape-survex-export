@@ -243,7 +243,9 @@ to extract the co-ordinates of the GCPs.
 
 For example suppose one wanted to georeference the ULSA 1989 Mossdale
 survey, which is included here as `mossdale_ulsaj89.png`.  The
-original of this was downloaded from [CaveMaps](http://cavemaps.org/ "CaveMaps home page").  This version has some material cropped out and
+original of this was downloaded from 
+[CaveMaps](http://cavemaps.org/ "CaveMaps home page").  
+This version has some material cropped out and
 has been reduced to a binary (2-colour) image.  The image is imported into
 inkscape and the scale bar (500ft = 152.4m) and North arrow traced
 (conveniently, the survey uses true North, so magnetic declination
@@ -329,10 +331,22 @@ is at NGR SE 01667 69779, and the following can be used
 *cs out EPSG:27700
 
 *begin mossdale_ulsaj89
-*fix entrance 01667 69779 425
+*fix entrance 401667 469779 425
+*entrance entrance
+*equate entrance path4342.0
+
+*data normal from to tape compass clino
+
+*begin path4342
+*export 0
+  0   1 1383.46  113  0
+*end path4342
+
+*end mossdale_ulsaj89 
 ```
 Processing this file (`mossdale_ulsaj89.svx`)
-by `cavern` and `3dtopos` gives the same result as above.
+by `cavern` and `3dtopos` gives the same result as above (this may require a 
+recent version of survex to handle the `*cs` commands).
 The survex documentation is a bit vague on how to use the `*cs`
 command so this is probably not the only way to do this.
 
