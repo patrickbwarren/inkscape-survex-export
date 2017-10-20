@@ -331,7 +331,7 @@ is at NGR SE 01667 69779, and the following can be used
 *cs out EPSG:27700
 
 *begin mossdale_ulsaj89
-*fix entrance 401667 469779 425
+*fix entrance 01667 69779 425
 *entrance entrance
 *equate entrance path4342.0
 
@@ -344,9 +344,10 @@ is at NGR SE 01667 69779, and the following can be used
 
 *end mossdale_ulsaj89 
 ```
-Processing this file (`mossdale_ulsaj89.svx`)
-by `cavern` and `3dtopos` gives the same result as above (this may require a 
-recent version of survex to handle the `*cs` commands).
+Processing this file (here provided as `mossdale_ulsaj89.svx`)
+by `cavern` and `3dtopos` gives the same result as above, but note
+this may require a 
+recent version of survex to handle the `*cs` commands.
 The survex documentation is a bit vague on how to use the `*cs`
 command so this is probably not the only way to do this.
 
