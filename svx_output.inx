@@ -3,9 +3,6 @@
   <_name>Survex file</_name>
   <id>org.patrickbwarren.output.svx</id>
   <dependency type="executable" location="extensions">svx_output.py</dependency>
-  <dependency type="executable" location="extensions">inkex.py</dependency>
-  <dependency type="executable" location="extensions">simplepath.py</dependency>
-  <dependency type="executable" location="extensions">simplestyle.py</dependency>
   <param name="introduction" type="description">Export paths as survex file.</param>
   <param name="tab" type="notebook">
     <page name="Parameters" _gui-text="Parameters">

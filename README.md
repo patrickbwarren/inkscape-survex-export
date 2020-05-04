@@ -1,5 +1,8 @@
 ## Survey data reconstruction
 
+* _Use v1.1 of this plugin for Inkscape 0.92_
+* _Work in progress to port to Inkscape 1.0_
+
 The tool here adds an [Inkscape](https://inkscape.org/ "Inkscape home
 page") option to save a drawing to a [Survex](http://survex.com/ "Survex
 home page") (`.svx`) file.  A typical workflow starting from a
@@ -369,4 +372,4 @@ along with this program.  If not, see
 
 ### Copyright
 
-This program is copyright &copy; 2015 Patrick B Warren.
+This program is copyright &copy; 2015, 2020 Patrick B Warren.
