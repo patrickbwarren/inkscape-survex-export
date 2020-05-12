@@ -29,6 +29,10 @@ import inkex, simplepath, simplestyle
 
 # Define a (trivial) exception class to catch path errors
 
+class SvxOutput(inkex.OutputputExtension):
+    def save(self, stream):
+        stream.write(self)
+
 class PathError(Exception):
     pass
 
@@ -65,14 +69,14 @@ e.arg_parser.add_argument('--cscale', default='#0000ff', help='Color of scale ba
 
 args = e.arg_parser.parse_args()
 
+
+
 # Parse the SVG file which is passed as the last command line argument
 
 # The commented out 'svg.find' and 'svg.findall' statements below show
 # the correct way to to pass namespaces, however it appears they do
 # not work on Windows.  Therefore the actual statements used are
 # kludges which use a named argument in a string format.
-
-print(sys.argv[-1])
 
 e.svg.parse(sys.argv[-1])
 

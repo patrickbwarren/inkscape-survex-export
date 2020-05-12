@@ -1,18 +1,13 @@
-## Survey data reconstruction
+## Export a line drawing to survex file
 
 * _Use v1.1 of this plugin for Inkscape 0.92_
 * _Work in progress to port to Inkscape 1.0_
 
-The tool here adds an [Inkscape](https://inkscape.org/ "Inkscape home
-page") option to save a drawing to a [Survex](http://survex.com/ "Survex
-home page") (`.svx`) file.  A typical workflow starting from a
-scanned drawn-up survey image is described below.  Use-cases might
-include:
+Export a drawing (polylines) as a .svx file. Use-cases include:
 
 * producing a plausible length estimate for a drawn-up survey;
 * georeferencing a drawn-up survey (see below);
-* generating a skeleton from an existing drawn-up survey, to hang data
-off in a resurvey project;
+* generating a skeleton to hang data off in a resurvey project;
 * giving 'armchair cavers' something useful to do.
 
 A couple of example surveys (Inkscape traced drawings) are also included.
@@ -22,11 +17,6 @@ A couple of example surveys (Inkscape traced drawings) are also included.
 Copy the files `svx_export.py` and `svx_export.inx` into your local
 Inkscape extension folder (eg `$HOME/.config/inkscape/extensions/` on
 unix, or `%APPDATA%\inkscape\extensions\` on Windows).  
-
-That's it &ndash;
-there are no additional dependencies and this should work on most
-platforms.  In particular it has been tested to work with Inkscape 0.91 (r13725), on both
-Linux and Windows.
 
 ### Usage
 
@@ -39,11 +29,10 @@ drawn-up survey.  The following conventions are observed:
 
 Lines of any other color are ignored, as are other drawing objects.
 The default colors can be changed (see below), for example to red-blue-black 
-if red-green-blue gives problems.
+scheme if red-green-blue gives problems.
 
-In Inkscape, the option to save to a Survex (`*.svx`) file should
-appear under 'File &rarr; Save As&hellip;' or 'File &rarr; Save a
-Copy&hellip;'.  This brings up a dialogue box, with:
+The extension appears under Extensions &rarr; Export  &rarr;
+Create .svx file&hellip;  In the subsequent dialog box:
 
 * in the 'Parameters' tab:
     + length of scale line (in m);
