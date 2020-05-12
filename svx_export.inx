@@ -1,37 +1,62 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+svx_export.inx
+Export polylines to .svx file
+
+Copyright (C) 2018, 2020 Patrick B Warren
+Email: patrickbwarren@gmail.com
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see
+<http://www.gnu.org/licenses/>.
+-->
 <inkscape-extension xmlns="http://www.inkscape.org/namespace/inkscape/extension">
-  <_name>Survex file</_name>
-  <id>org.patrickbwarren.output.svx</id>
-  <dependency type="executable" location="extensions">svx_output.py</dependency>
-  <param name="introduction" type="description">Export paths as survex file.</param>
+  <name>Export drawing to .svx file</name>
+  <id>org.patrickbwarren.svx_export</id>
   <param name="tab" type="notebook">
-    <page name="Parameters" _gui-text="Parameters">
-      <param name="scale" type="float" precision="2" min="0" max="9999" _gui-text="Length of scale line (in m)">100.00</param>
-      <param name="north" type="float" precision="1" min="0" max="360" _gui-text="Bearing of orientation line (in degrees)">0.0</param>
-      <param name="tol" type="float" precision="2" min="0" max="9999" _gui-text="Tolerance to equate stations (in m)">0.2</param>
-      <param name="layer" type="string" _gui-text="Restrict conversion to a named layer"></param>
+    <page name="parameters" gui-text="Parameters">
+      <param name="directory" type="path" mode="folder" gui-text="Directory:"></param>
+      <param name="file" type="string" gui-text="File name (optionally including extension):"></param>
+      <param name="ignore" type="bool" gui-text="Ignore these settings and use defaults from document">false</param>
+      <spacer/>
+      <param name="scale" type="float" precision="2" min="0" max="9999" gui-text="Length of scale line (in m)">100.00</param>
+      <param name="north" type="float" precision="1" min="0" max="360" gui-text="Bearing of orientation line (in degrees)">0.0</param>
+      <param name="tol" type="float" precision="2" min="0" max="9999" gui-text="Tolerance to equate stations (in m)">0.2</param>
+      <param name="layer" type="bool" gui-text="Restrict conversion to selected layer"></param>
     </page>
-    <page name="Colors" _gui-text="Colors">
-      <param name="cpaths" type="string" _gui-text="Color of (poly)lines for export (default red)">#ff0000</param>
-      <param name="cnorth" type="string" _gui-text="Color of orientation line (default green)">#00ff00</param>
-      <param name="cscale" type="string" _gui-text="Color of scale line (default blue)">#0000ff</param>
-      <param name="info" type="description">(color code is #rrggbb)</param>
+    <page name="path-colorm" gui-text="Export color">
+      <param name="path-color" type="color" gui-text="Color of (poly)lines for export"></param>
     </page>
-    <page name="Help" _gui-text="Help">
-      <param name="about1" type="description">The following conventions are observed:</param>
-      <param name="about2" type="description"> * red (poly)lines are converted to traverses;</param>
-      <param name="about3" type="description"> * a green line represents the orientation (default S to N);</param>
-      <param name="about4" type="description"> * a blue line represents the scale (bar).</param>
-      <param name="about5" type="description">Default colors can be changed in the Colors tab.</param>
+    <page name="orient-color" gui-text="Orient color">
+      <param name="orient-color" type="color" gui-text="Color of orientation line"></param>
+    </page>
+    <page name="scale-color" gui-text="Scalebar color">
+      <param name="scale-color" type="color" gui-text="Color of scalebar line"></param>
     </page>
   </param>
-  <output>
-    <extension>.svx</extension>
-    <mimetype>application/x-survex-svx</mimetype>
-    <_filetypename>Survex file (*.svx)</_filetypename>
-    <_filetypetooltip>Export paths to survex file</_filetypetooltip>
-  </output>
+  <spacer/>
+  <label>The following conventions are observed:</label>
+  <label> * export color (poly)lines are converted to traverses;</label>
+  <label> * the orient color line represents the orientation (default S to N);</label>
+  <label> * the scalebar color line defines the scale.</label>
+  <label>(Remember to set the colors in the color tabs!)</label>
+  <effect needs-live-preview="false" needs-document="true">
+    <object-type>all</object-type>
+    <effects-menu>
+      <submenu name="Export"/>
+    </effects-menu>
+  </effect>
   <script>
-    <command reldir="extensions" interpreter="python">svx_output.py</command>
+    <command location="extensions" interpreter="python">svx_export.py</command>
   </script>
 </inkscape-extension>
