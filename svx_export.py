@@ -34,22 +34,28 @@ class ExportSurvex(inkex.EffectExtension):
     def sprintd(self, b):
         "Takes a bearing and returns it as string in 000 format"
         while b < 0: b += 360
-        b = int(b + 0.5)
+        b = round(b, 1)
         while b >= 360: b -= 360
-        return '%03i' % b
+        return '%05.1f' % b
 
-    # need to catch horizontal and vertical steps here
-
-    def distance(self, p0, p1):
-        "The distance between two points"
-        x0, y0, x1, y1 = *p0.args, *p1.args # '*' flattens the nested list
-        dx, dy = x1 - x0, y1 - y0
+    def delta(self, p0, p1):
+        "Return dl, dx, dy between two AbsolutePathElements"
+        x0, y0, x1, y1 = *p0.args, *p1.args
+        dx, dy = x1-x0, y1-y0
         dl = sqrt(dx*dx + dy*dy)
         return dl, dx, dy
 
-    def first_step(self, line):
-        "The distance between the first two points in a line"
-        return self.distance(line[0], line[1])
+    def first_step(self, path):
+        "return dl, dx, dy between first two elements"
+        return self.delta(path[0], path[1])
+
+    def distill(self, path):
+        "Convert any horz or vert elements and return absolute path"
+        path = path.to_absolute()
+        for i, seg in enumerate(path):
+            if isinstance(seg, (inkex.paths.Horz, inkex.paths.Vert)):
+                path[i] = seg.to_line(path[i-1])
+        return path
 
     def add_arguments(self, pars):
 
@@ -83,7 +89,7 @@ class ExportSurvex(inkex.EffectExtension):
         s = '{%s}label' % inkex.NSS[u'inkscape']
         current_layer = el.attrib[s] if el is not None and s in el.attrib else None
 
-        # tfigure out the name of the .svx file
+        # figure out the name of the .svx file
         
         if self.options.option == 'specified':
             file_name = self.options.file
@@ -101,15 +107,17 @@ class ExportSurvex(inkex.EffectExtension):
 
         svx_file = os.path.splitext(file_name)[0] + '.svx'
 
-        # find all the polylines in the drawing as a list of dicts
+        # Find all the polylines in the drawing as a list of dicts of
+        # (path, id, stroke, layer); distill removes Horz and Vert to
+        # make path a list of inkex AbsolutePathCommands (Line, Move).
 
         poly_lines = []
 
         for path in self.svg.findall('.//svg:g/svg:path', namespaces=inkex.NSS):
             stroke = dict(inkex.Style.parse_str(path.attrib['style']))['stroke']
             layer = path.getparent().attrib['{%s}label' % inkex.NSS[u'inkscape']]
-            poly_lines.append({'path': path.path.to_absolute(), 'id': path.attrib['id'],
-                               'stroke': stroke, 'layer': layer})
+            poly_lines.append({'path': self.distill(path.path),
+                               'id': path.attrib['id'], 'stroke': stroke, 'layer': layer})
 
         # Find the scale bar line and calculate the scale factor
 
@@ -158,11 +166,11 @@ class ExportSurvex(inkex.EffectExtension):
             for i, pos in enumerate(line['path']):
                 stations.append({'traverse': line['id'], 'id': str(i), 'pos': pos})
                 if i:
-                    dl, dx, dy = self.distance(prev_pos, pos)
+                    dl, dx, dy = self.delta(pos, prev)
                     tape = scale_fac * dl
                     compass = self.options.north + degrees(atan2(ex*dx+ey*dy, nx*dx+ny*dy))
                     legs.append({'from': str(i-1), 'to': str(i), 'tape': tape, 'compass': compass})
-                prev_pos = pos
+                prev = pos
             traverses.append({'id': line['id'], 'legs': legs})
 
         ntraverse = len(traverses)
@@ -187,7 +195,7 @@ class ExportSurvex(inkex.EffectExtension):
         equates = []
 
         for pair in combinations(stations, 2):
-            dl, _, _ = self.distance(pair[0]['pos'], pair[1]['pos'])
+            dl, _, _ = self.delta(pair[0]['pos'], pair[1]['pos'])
             if dl * scale_fac < self.options.tol:
                 equates.append({'pair': pair, 'sepn': dl})
 
