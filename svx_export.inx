@@ -26,8 +26,13 @@ along with this program.  If not, see
   <param name="tab" type="notebook">
     <page name="parameters" gui-text="Parameters">
       <param name="directory" type="path" mode="folder" gui-text="Directory:"></param>
-      <param name="file" type="string" gui-text="File name (optionally including extension):"></param>
-      <param name="ignore" type="bool" gui-text="Ignore these settings and use defaults from document">false</param>
+      <param name="file" type="string" gui-text="File name (optionally including .svx):"></param>
+      <param name="option" type="optiongroup" appearance="minimal" gui-text="File name (.svx):">
+	<option value="specified">as specified above</option>
+	<option value="document">use document name</option>
+	<option value="image">use embedded image name</option>
+	<option value="layer">use selected layer name</option>
+      </param>
       <spacer/>
       <param name="scale" type="float" precision="2" min="0" max="9999" gui-text="Length of scale line (in m)">100.00</param>
       <param name="north" type="float" precision="1" min="0" max="360" gui-text="Bearing of orientation line (in degrees)">0.0</param>
