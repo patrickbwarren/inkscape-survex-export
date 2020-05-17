@@ -67,7 +67,7 @@ class ExportSurvex(inkex.EffectExtension):
             for seg in line:
                 sys.stderr.write(f" {seg.letter} {seg.args}")
             sys.stderr.write('\n')
-        return self.delta(line[0], line[1])
+        return line
 
     def path_clean(self, path):
         "Convert any horz or vert elements and return absolute path"
@@ -146,7 +146,7 @@ class ExportSurvex(inkex.EffectExtension):
         # Find the scale bar line and calculate the scale factor
 
         try:
-            scale_len, _, _ = self.extract_line(self.options.scale_color)
+            scale_len, _, _ = self.delta(*self.extract_line(self.options.scale_color))
             scale_fac = self.options.scale / scale_len
         except PathError as err:
             raise inkex.AbortExtension(f'Scale bar: {err}')
@@ -155,7 +155,7 @@ class ExportSurvex(inkex.EffectExtension):
         # to point along N, and the unit (ex, ey) to point along E.
 
         try:
-            dl, dx, dy = self.extract_line(self.options.orient_color)
+            dl, dx, dy = self.delta(*self.extract_line(self.options.orient_color))
             nx, ny = -dx/dl, -dy/dl
             ex, ey = -ny, nx
         except PathError as err:
