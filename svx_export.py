@@ -29,14 +29,18 @@ from time import strftime
 from itertools import combinations
 from math import sqrt, atan2, degrees
 
+class PathError(Exception):
+    pass
+
 class ExportSurvex(inkex.EffectExtension):
 
-    def sprintd(self, b):
-        "Takes a bearing and returns it as string in 000 format"
+    poly_lines = []
+
+    def round360(self, b):
+        "Converts an angle to a bearing in [0, 360)"
         while b < 0: b += 360
-        b = round(b, 1)
         while b >= 360: b -= 360
-        return '%05.1f' % b
+        return b
 
     def delta(self, p0, p1):
         "Return dl, dx, dy between two AbsolutePathElements"
@@ -45,11 +49,27 @@ class ExportSurvex(inkex.EffectExtension):
         dl = sqrt(dx*dx + dy*dy)
         return dl, dx, dy
 
-    def first_step(self, path):
-        "return dl, dx, dy between first two elements"
-        return self.delta(path[0], path[1])
+    def extract_line(self, color):
+        "extract exactly one measuring line that matches color"
+        subset = list(filter(lambda el: el['stroke'] == str(color.to_rgb()), self.poly_lines))
+        if len(subset) == 0:
+            raise PathError('no line found (check settings in color tabs)')
+        elif len(subset) > 1:
+            raise PathError('more than one line found (check settings in color tabs)')
+        line = subset[0]['path']
+        if len(line) != 2:
+            raise PathError('line should be exactly two points')
+        for seg in line:
+            if not isinstance(seg, (inkex.paths.Move, inkex.paths.Line)):
+                raise PathError('line should be straight')
+        if self.options.debug: # write out discovered path
+            sys.stderr.write(f"EXTRACTED: {subset[0]['layer']}.{subset[0]['id']} ({subset[0]['stroke']}):")
+            for seg in line:
+                sys.stderr.write(f" {seg.letter} {seg.args}")
+            sys.stderr.write('\n')
+        return self.delta(line[0], line[1])
 
-    def distill(self, path):
+    def path_clean(self, path):
         "Convert any horz or vert elements and return absolute path"
         path = path.to_absolute()
         for i, seg in enumerate(path):
@@ -70,7 +90,7 @@ class ExportSurvex(inkex.EffectExtension):
         pars.add_argument('--path-color', type=inkex.Color, default=inkex.Color("red"), help="Path export color")
         pars.add_argument('--orient-color', type=inkex.Color, default=inkex.Color("green"), help="Path export color")
         pars.add_argument('--scale-color', type=inkex.Color, default=inkex.Color("blue"), help="Path export color")
-        pars.add_argument('--dump', type=inkex.Boolean, help='dump information')
+        pars.add_argument('--debug', type=inkex.Boolean, help='dump information')
         
     def effect(self):
 
@@ -108,48 +128,62 @@ class ExportSurvex(inkex.EffectExtension):
         svx_file = os.path.splitext(file_name)[0] + '.svx'
 
         # Find all the polylines in the drawing as a list of dicts of
-        # (path, id, stroke, layer); distill removes Horz and Vert to
+        # (path, id, stroke, layer); path_clean removes Horz and Vert to
         # make path a list of inkex AbsolutePathCommands (Line, Move).
-
-        poly_lines = []
 
         for path in self.svg.findall('.//svg:g/svg:path', namespaces=inkex.NSS):
             stroke = dict(inkex.Style.parse_str(path.attrib['style']))['stroke']
             layer = path.getparent().attrib['{%s}label' % inkex.NSS[u'inkscape']]
-            poly_lines.append({'path': self.distill(path.path),
+            self.poly_lines.append({'path': self.path_clean(path.path),
                                'id': path.attrib['id'], 'stroke': stroke, 'layer': layer})
 
+        if self.options.debug: # write out all discovered path data
+            for line in self.poly_lines:
+                sys.stderr.write(f"{line['layer']}.{line['id']} ({line['stroke']})\n")
+                for seg in line['path']:
+                    sys.stderr.write(f" {seg.letter} {seg.args}\n")
+                    
         # Find the scale bar line and calculate the scale factor
 
-        color = str(self.options.scale_color.to_rgb())
-        subset = list(filter(lambda el: el['stroke'] == color, poly_lines))
-        if not subset:
-            raise inkex.AbortExtension('No scale bar found (check settings in color tabs)')
-        #sys.stderr.write(f'{subset[0]}\n')
-        scale_len, _, _ = self.first_step(subset[0]['path'])
-        scale_fac = self.options.scale / scale_len
+        try:
+            scale_len, _, _ = self.extract_line(self.options.scale_color)
+            scale_fac = self.options.scale / scale_len
+        except PathError as err:
+            raise inkex.AbortExtension(f'Scale bar: {err}')
 
         # Find the orientation line and construct the unit vector (nx, ny)
         # to point along N, and the unit (ex, ey) to point along E.
 
-        color = str(self.options.orient_color.to_rgb())
-        subset = list(filter(lambda el: el['stroke'] == color, poly_lines))
-        if not subset:
-            raise inkex.AbortExtension('No orientation line found (check settings in color tabs)')
-        dl, dx, dy = self.first_step(subset[0]['path'])
-        nx, ny = dx/dl, dy/dl
-        ex, ey = -ny, nx
+        try:
+            dl, dx, dy = self.extract_line(self.options.orient_color)
+            nx, ny = -dx/dl, -dy/dl
+            ex, ey = -ny, nx
+        except PathError as err:
+            raise inkex.AbortExtension(f'Orientation vector: {err}')
 
         # Find the exportable (poly)lines, restricted to selected layer if desired
         
         color = str(self.options.path_color.to_rgb())
-        poly_lines = list(filter(lambda el: el['stroke'] == color, poly_lines))
+        self.poly_lines = list(filter(lambda el: el['stroke'] == color, self.poly_lines))
         if self.options.layer:
             if current_layer is None:
                 raise inkex.AbortExtension('No layer selected to filter on')
-            poly_lines = list(filter(lambda el: el['layer'] == current_layer, poly_lines))
-        if not poly_lines:
-            raise inkex.AbortExtension('No exportable lines found (check settings in color tabs and layer selection)')
+            self.poly_lines = list(filter(lambda el: el['layer'] == current_layer, self.poly_lines))
+        if not self.poly_lines:
+            raise inkex.AbortExtension('No exportable lines found (check settings in color tabs and/or layer selection)')
+
+        # Check all straight line segments
+
+        try:
+            for line in self.poly_lines:
+                for seg in line['path']:
+                    if not isinstance(seg, (inkex.paths.Move, inkex.paths.Line)):
+                        raise PathError(f"{line['id']}")
+        except PathError as path_id:
+            sys.stderr.write(f'{path_id} contains curved segments\n')
+            sys.stderr.write('This can be fixed by selecting all paths, then selecting all nodes\n')
+            sys.stderr.write("in node edit mode, and applying 'Make selected segments lines'\n")
+            raise inkex.AbortExtension
 
         # Now build the survex traverses.  Keep track of stations and
         # absolute positions to identify equates and exports.
@@ -161,7 +195,7 @@ class ExportSurvex(inkex.EffectExtension):
         stations = []
         traverses = []
 
-        for line in poly_lines:
+        for line in self.poly_lines:
             legs = []
             for i, pos in enumerate(line['path']):
                 stations.append({'traverse': line['id'], 'id': str(i), 'pos': pos})
@@ -215,45 +249,46 @@ class ExportSurvex(inkex.EffectExtension):
             traverse, station = traverse_dot_station.split('.')
             exportd[traverse].append(station)
 
-        # the top level enclosing *begin and *end is layer name or file name
+        # the top level enclosing *begin and *end is taken from file name
 
-        top_level = self.options.layer or os.path.splitext(svx_file)[0]
+        top_level = os.path.splitext(svx_file)[0]
         
         # If we made it this far we're ready to write the survex file
 
         with open(os.path.join(self.options.directory, svx_file), 'w') as f:
 
-            f.write(f"; survex file autogenerated from {self.svg.name}\n")
-
+            f.write(f"; {svx_file} autogenerated from {self.svg.name}\n")
             if img_file is not None:
                 f.write(f"; embedded image file name {img_file}\n")
-
             f.write(f"; generated {strftime('%c')}\n\n")
 
-            f.write(f"; SVG orientation: ({nx}, {ny}) is {self.sprintd(self.options.north)}\n")
-            f.write(f"; SVG orientation: ({ex}, {ey}) is {self.sprintd(self.options.north + 90)}\n")
-            f.write(f"; SVG scale: {scale_len} is {self.options.scale} m, scale factor {scale_fac}\n")
+            f.write(f"; SVG orientation: vector ({nx:0.3f}, {ny:0.3f}) is {self.round360(self.options.north):0.1f} degrees\n")
+            f.write(f"; SVG orientation: vector ({ex:0.3f}, {ey:0.3f}) is {self.round360(self.options.north + 90):0.1f} degrees\n")
+            f.write(f"; SVG scale: {scale_len:0.2f} units = {self.options.scale:0.1f} m, scale factor {scale_fac:0.4f}\n")
             f.write(f"; SVG contained {ntraverse} traverses and {nstation} stations\n")
-            f.write(f"; tolerance for identifying equates {self.options.tol} m\n\n")
+            f.write(f"; SVG tolerance for identifying equates {self.options.tol:0.2f} m\n\n")
             
-            f.write(f"*begin {top_level}\n")
+            f.write(f"*begin {top_level}\n\n")
 
             if equates:
                 for el in equates:
                     stations = [f"{station['traverse']}.{station['id']}" for station in el['pair']]
-                    f.write(f"*equate {stations[0]} {stations[1]}; separation {el['sepn']} m\n")
+                    f.write(f"*equate {stations[0]} {stations[1]}; separation {el['sepn']:0.3f} m\n")
+                f.write('\n')
 
-            f.write("*data normal from to tape compass clino\n")
+            f.write("*data normal from to tape compass clino\n\n")
 
             for traverse in traverses:
                 f.write(f"*begin {traverse['id']}\n")
                 if exportd[traverse['id']]:
                     f.write('*export ' + ' '.join(map(str, sorted(exportd[traverse['id']]))) + '\n')
+                f.write('\n')
                 for leg in traverse['legs']:
-                    f.write(f"%3s %3s %7.2f %s 0\n" % (leg['from'], leg['to'], leg['tape'], self.sprintd(leg['compass'])))
-                f.write(f"*end {traverse['id']}\n")
+                    #f.write(f"%3s %3s %7.2f %s 0\n" % (leg['from'], leg['to'], leg['tape'], self.sprintd(leg['compass'])))
+                    f.write(f"{leg['from']:3s} {leg['to']:3s} {leg['tape']:8.3f} {self.round360(leg['compass']):6.1f} 0\n")
+                f.write(f"\n*end {traverse['id']}\n\n")
 
-            f.write(f"*end {top_level}\n")
+            f.write(f"*end {top_level}\n\n")
             f.write("; end of file\n")
 
         sys.stderr.write(f'Succesfully generated {svx_file}\n')
