@@ -152,13 +152,17 @@ the `*begin` and `*end` blocks in each file.
 
 ### Examples
 
+![Inkscape: `lonerange_cpcj6-2.png` plus traced survey lines.](loneranger_cpcj6-2_inkscape.png "Lone Ranger Series from CPC J vol 6 no 1"){width=80%}
+
 The file `loneranger_cpcj6-2.svg` is a tracing of a survey of the Lone
 Ranger series in Link Pot (Easegill) where the PNG image
 (`loneranger_cpcj6-2.png`) &ndash; originally published in CPC Journal 6(2)
 &ndash; is taken from [CaveMaps](http://cavemaps.org/ "CaveMaps home
 page").  The scale line end-end distance is 30 m, so 'Length of
 scale line (in m)' in the Parameters tab would be set
-to 30.0.
+to 30.0. 
+
+![Inkscape: `far_country_ulsaj89.png` plus traced survey lines.](farcountry_ulsaj89_inkscape.png "Far Country from ULSA J 89"){width=80%}
 
 Similarly, `farcountry_ulsaj89.svg` is a tracing of a survey of Far
 Country in Gaping Gill where the PNG image (`farcountry_ulsaj89.png`)
@@ -218,6 +222,8 @@ Check the generated `.svx` file can be processed, and then add a
 `*fix` command to fix the entrance GCP to the known co-ordinates.
 Processing this file  allows you
 to extract the co-ordinates of the GCPs.
+
+![Inkscape: `mossdale_ulsaj89.png` plus artifical survey lines.](mossdale_ulsaj89_inkscape.png "Mossdale Caverns from ULSA J 89"){width=80%}
 
 For example suppose one wanted to georeference the ULSA 1989 Mossdale
 survey, which is included here as `mossdale_ulsaj89.png`.  The
@@ -297,9 +303,12 @@ directly imported into a GIS platform such as [QGIS](http://www.qgis.org/ "QGIS 
 satellite imagery, or the Environment Agency LIDAR data, for example.
 
 Since it is also georeferenced (by the `*cs` commands) the survex
-centreline data can also be imported into a GIS platform using
+centreline data can also be imported into QGIS using
 a [QGIS plugin](https://github.com/patrickbwarren/qgis-survex-import) or a
 [QGIS3 plugin](https://github.com/patrickbwarren/qgis3-survex-import).
+The result, superimposed on an [Open Street Map](https://www.openstreetmap.org/) background is here:
+
+![QGIS3: `mossdale_ulsaj89.tiff` plus artificial survey line and Open Street Map data](mossdale_ulsaj89_qgis3.png "Mossdale Caverns from ULSA J 89 plus Open Street Map data."){width=80%}
 
 ### Copying
 
