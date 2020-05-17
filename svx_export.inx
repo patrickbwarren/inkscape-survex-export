@@ -34,7 +34,7 @@ along with this program.  If not, see
 	<option value="layer">use selected layer name</option>
       </param>
       <spacer/>
-      <param name="scale" type="float" precision="2" min="0" max="9999" gui-text="Length of scale line (in m)">100.00</param>
+      <param name="scale" type="float" precision="2" min="0" max="9999" gui-text="Length of scalebar line (in m)">100.00</param>
       <param name="north" type="float" precision="1" min="0" max="360" gui-text="Bearing of orientation line (in degrees)">0.0</param>
       <param name="tol" type="float" precision="2" min="0" max="9999" gui-text="Tolerance to equate stations (in m)">0.2</param>
       <param name="layer" type="bool" gui-text="Restrict conversion to selected layer"></param>
@@ -51,9 +51,9 @@ along with this program.  If not, see
   </param>
   <spacer/>
   <label>The following conventions are observed:</label>
-  <label> * export color (poly)lines are converted to traverses;</label>
-  <label> * the orient color line represents the orientation (default S to N);</label>
-  <label> * the scalebar color line defines the scale.</label>
+  <label> * exported (poly)lines are converted to traverses;</label>
+  <label> * the orientation line determines the orientation (default S to N);</label>
+  <label> * the scalebar line defines the scale.</label>
   <label>(Remember to set the colors in the color tabs!)</label>
   <effect needs-live-preview="false" needs-document="true">
     <object-type>all</object-type>
