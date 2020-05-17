@@ -36,11 +36,9 @@ class ExportSurvex(inkex.EffectExtension):
 
     poly_lines = []
 
-    def round360(self, b):
+    def round360(self, x):
         "Converts an angle to a bearing in [0, 360)"
-        while b < 0: b += 360
-        while b >= 360: b -= 360
-        return b
+        return (x+360) if x < 0 else (x-360) if x >= 360 else x
 
     def delta(self, p0, p1):
         "Return dl, dx, dy between two AbsolutePathElements"
@@ -83,7 +81,8 @@ class ExportSurvex(inkex.EffectExtension):
         pars.add_argument('--directory', default=os.path.expanduser('~'), help='Destination directory')
         pars.add_argument('--file', help='Destination .svx file (with or without extension)')
         pars.add_argument('--option', help='File name defaults')
-        pars.add_argument('--layer', type=inkex.Boolean, help='Restrict export to current layer')
+        pars.add_argument('--restrict', type=inkex.Boolean, help='Restrict export to current layer')
+        pars.add_argument('--overwrite', type=inkex.Boolean, help='Overwrite .svx file if it already exists')
         pars.add_argument('--scale', type=float, default=100.0, help='Length of scale bar (in m)')
         pars.add_argument('--north', type=float, default=0.0, help='Bearing for orientation line (in degrees)')
         pars.add_argument('--tol', type=float, default=0.2, help='Tolerance to equate stations (in m)')
@@ -97,19 +96,19 @@ class ExportSurvex(inkex.EffectExtension):
         if not os.path.isdir(self.options.directory):
             raise inkex.AbortExtension('The specified directory does not exist')
 
-        # determine the image file name if there is one
+        # Determine the image file name if there is one
         
         el = self.svg.find('.//svg:image', namespaces=inkex.NSS)
         s = '{%s}absref' % inkex.NSS[u'sodipodi']
         img_file = os.path.split(el.attrib[s])[1] if el is not None and s in el.attrib else None
 
-        # get the name of the currently selected layer
+        # Get the name of the currently selected layer if there is one
         
         el = self.svg.get_current_layer()
         s = '{%s}label' % inkex.NSS[u'inkscape']
         current_layer = el.attrib[s] if el is not None and s in el.attrib else None
 
-        # figure out the name of the .svx file
+        # Figure out the name of the .svx file
         
         if self.options.option == 'specified':
             file_name = self.options.file
@@ -123,9 +122,12 @@ class ExportSurvex(inkex.EffectExtension):
             file_name = current_layer
 
         if file_name is None:
-            raise inkex.AbortExtension('No file name specified')
+            raise inkex.AbortExtension('Could not construct .svx file name (no image etc)')
 
         svx_file = os.path.splitext(file_name)[0] + '.svx'
+
+        if os.path.exists(os.path.join(self.options.directory, svx_file)) and not self.options.overwrite:
+            raise inkex.AbortExtension(f'Aborting: {svx_file} already exists, and overwrite box not checked')
 
         # Find all the polylines in the drawing as a list of dicts of
         # (path, id, stroke, layer); path_clean removes Horz and Vert to
@@ -151,8 +153,10 @@ class ExportSurvex(inkex.EffectExtension):
         except PathError as err:
             raise inkex.AbortExtension(f'Scale bar: {err}')
 
-        # Find the orientation line and construct the unit vector (nx, ny)
-        # to point along N, and the unit (ex, ey) to point along E.
+        # Find the orientation line (S-N) and construct the unit
+        # vector (nx, ny) to point along N, and the unit (ex, ey) to
+        # point along E.  These are notional directions, and the real
+        # orientations are used in the calculations below.
 
         try:
             dl, dx, dy = self.delta(*self.extract_line(self.options.orient_color))
@@ -165,14 +169,16 @@ class ExportSurvex(inkex.EffectExtension):
         
         color = str(self.options.path_color.to_rgb())
         self.poly_lines = list(filter(lambda el: el['stroke'] == color, self.poly_lines))
-        if self.options.layer:
+        if self.options.restrict:
             if current_layer is None:
                 raise inkex.AbortExtension('No layer selected to filter on')
             self.poly_lines = list(filter(lambda el: el['layer'] == current_layer, self.poly_lines))
         if not self.poly_lines:
-            raise inkex.AbortExtension('No exportable lines found (check settings in color tabs and/or layer selection)')
+            sys.stderr.write('No exportable lines found\n')
+            sys.stderr.write('(check settings in color tabs and/or layer selection)\n')
+            raise inkex.AbortExtension
 
-        # Check all straight line segments
+        # Check the (poly)lines comprise straight line segments
 
         try:
             for line in self.poly_lines:
@@ -185,12 +191,14 @@ class ExportSurvex(inkex.EffectExtension):
             sys.stderr.write("in node edit mode, and applying 'Make selected segments lines'\n")
             raise inkex.AbortExtension
 
-        # Now build the survex traverses.  Keep track of stations and
-        # absolute positions to identify equates and exports.
+        # Now build the survex traverses:
 
-        # Stations is a list of dicts of (station_id, pos, traverse_name)
-        # Traverses is a list of dicts of (traverse_name, legs), where
-        # Legs is a list of dicts of (from_id, to_id, tape, compass)
+        # stations is a list of dicts of (traverse_id, station_id, pos),
+        # traverses is a list of dicts of (traverse_id, legs),
+        # legs is a list of dicts of (from_id, to_id, tape, compass).
+
+        # Keep track of stations and absolute positions to identify
+        # equates and exports:
 
         stations = []
         traverses = []
@@ -220,9 +228,9 @@ class ExportSurvex(inkex.EffectExtension):
         # equates which may contain redundant information if A is near
         # B, and B is near C, /and/ A is near C.  However survex
         # doesn't complain if there is redundant information in the
-        # equate directives.  This is convenient since it allows a
-        # list the pairwise comparisons /with the separations/, which
-        # facilitates debugging which stations have been equated.
+        # equate directives.  This is convenient since it allows one
+        # to list the pairwise comparisons with the separations, which
+        # facilitates debugging if stations have not been equated.
         
         # Equates is a list of dicts of (station_pair, separation)
 
@@ -235,7 +243,8 @@ class ExportSurvex(inkex.EffectExtension):
 
         # The /set/ of stations required for export.
 
-        exports = set([f"{station['traverse']}.{station['id']}" for el in equates for station in el['pair']])
+        exports = set([f"{station['traverse']}.{station['id']}"
+                       for el in equates for station in el['pair']])
 
         # Make a dictionary to keep track of stations which should be
         # exported from a given traverse.  The key is the traverse
@@ -245,11 +254,11 @@ class ExportSurvex(inkex.EffectExtension):
 
         exportd = dict([(traverse['id'], []) for traverse in traverses])
     
-        for traverse_dot_station in exports:
-            traverse, station = traverse_dot_station.split('.')
+        for element in exports:
+            traverse, station = element.split('.')
             exportd[traverse].append(station)
 
-        # the top level enclosing *begin and *end is taken from file name
+        # The top level enclosing *begin and *end is taken from file name
 
         top_level = os.path.splitext(svx_file)[0]
         
@@ -263,7 +272,7 @@ class ExportSurvex(inkex.EffectExtension):
             f.write(f"; generated {strftime('%c')}\n\n")
 
             f.write(f"; SVG orientation: vector ({nx:0.3f}, {ny:0.3f}) is {self.round360(self.options.north):0.1f} degrees\n")
-            f.write(f"; SVG orientation: vector ({ex:0.3f}, {ey:0.3f}) is {self.round360(self.options.north + 90):0.1f} degrees\n")
+            f.write(f"; SVG orientation: vector ({ex:0.3f}, {ey:0.3f}) is {self.round360(self.options.north+90):0.1f} degrees\n")
             f.write(f"; SVG scale: {scale_len:0.2f} units = {self.options.scale:0.1f} m, scale factor {scale_fac:0.4f}\n")
             f.write(f"; SVG contained {ntraverse} traverses and {nstation} stations\n")
             f.write(f"; SVG tolerance for identifying equates {self.options.tol:0.2f} m\n\n")
@@ -273,7 +282,7 @@ class ExportSurvex(inkex.EffectExtension):
             if equates:
                 for el in equates:
                     stations = [f"{station['traverse']}.{station['id']}" for station in el['pair']]
-                    f.write(f"*equate {stations[0]} {stations[1]}; separation {el['sepn']:0.3f} m\n")
+                    f.write(f"*equate {stations[0]} {stations[1]} ; separation {el['sepn']:0.3f} m\n")
                 f.write('\n')
 
             f.write("*data normal from to tape compass clino\n\n")
@@ -291,7 +300,7 @@ class ExportSurvex(inkex.EffectExtension):
             f.write(f"*end {top_level}\n\n")
             f.write("; end of file\n")
 
-        sys.stderr.write(f'Succesfully generated {svx_file}\n')
+        sys.stderr.write(f'Successfully generated {svx_file}\n')
 
 if __name__ == "__main__":
     ExportSurvex().run()

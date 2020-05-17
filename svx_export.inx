@@ -26,18 +26,19 @@ along with this program.  If not, see
   <param name="tab" type="notebook">
     <page name="parameters" gui-text="Parameters">
       <param name="directory" type="path" mode="folder" gui-text="Directory:"></param>
-      <param name="file" type="string" gui-text="File name (optionally including .svx):"></param>
-      <param name="option" type="optiongroup" appearance="minimal" gui-text="File name (.svx):">
-	<option value="specified">as specified above</option>
-	<option value="document">use document name</option>
-	<option value="image">use embedded image name</option>
-	<option value="layer">use selected layer name</option>
+      <param name="option" type="optiongroup" appearance="minimal" gui-text="Obtain file name:">
+	<option value="document">from document name</option>
+	<option value="image">from embedded image name</option>
+	<option value="layer">from selected layer name</option>
+	<option value="specified">as specified in box below</option>
       </param>
+      <param name="file" type="string" gui-text="(optionally including .svx):"></param>
+      <param name="overwrite" type="bool" gui-text="overwrite file if it already exists"></param>
       <spacer/>
-      <param name="scale" type="float" precision="2" min="0" max="9999" gui-text="Length of scalebar line (in m)">100.00</param>
-      <param name="north" type="float" precision="1" min="0" max="360" gui-text="Bearing of orientation line (in degrees)">0.0</param>
-      <param name="tol" type="float" precision="2" min="0" max="9999" gui-text="Tolerance to equate stations (in m)">0.2</param>
-      <param name="layer" type="bool" gui-text="Restrict conversion to selected layer"></param>
+      <param name="scale" type="float" precision="2" min="0" max="9999" gui-text="Length of scalebar line (in m):">100.00</param>
+      <param name="north" type="float" precision="1" min="0" max="360" gui-text="Bearing of orientation line (in degrees):">0.0</param>
+      <param name="tol" type="float" precision="2" min="0" max="9999" gui-text="Tolerance to equate stations (in m):">0.2</param>
+      <param name="restrict" type="bool" gui-text="restrict conversion to selected layer"></param>
     </page>
     <page name="path-colorm" gui-text="Export color">
       <param name="path-color" type="color" gui-text="Color of (poly)lines for export"></param>
