@@ -28,7 +28,7 @@ drawn-up survey.  The following conventions are observed:
 * a line of a third color sets the scale (eg from the scale bar);
 
 Lines of any other color are ignored, as are other drawing objects.
-The colors are set in color tabs in the dialog box.
+The colors are set by color tabs in the dialog box.
 
 The extension appears under Extensions &rarr; Export  &rarr;
 Export drawing to .svx file&hellip;
@@ -152,7 +152,7 @@ the `*begin` and `*end` blocks in each file.
 
 ### Examples
 
-![Inkscape: `lonerange_cpcj6-2.png` plus traced survey lines.](loneranger_cpcj6-2_inkscape.png "Lone Ranger Series from CPC J vol 6 no 1"){width=80%}
+![Inkscape: `lonerange_cpcj6-2.png` plus traced survey lines.](loneranger_cpcj6-2_inkscape.png "Lone Ranger Series from CPC J vol 6(2)")
 
 The file `loneranger_cpcj6-2.svg` is a tracing of a survey of the Lone
 Ranger series in Link Pot (Easegill) where the PNG image
@@ -162,7 +162,7 @@ page").  The scale line end-end distance is 30 m, so 'Length of
 scale line (in m)' in the Parameters tab would be set
 to 30.0. 
 
-![Inkscape: `far_country_ulsaj89.png` plus traced survey lines.](farcountry_ulsaj89_inkscape.png "Far Country from ULSA J 89"){width=80%}
+![Inkscape: `far_country_ulsaj89.png` plus traced survey lines.](farcountry_ulsaj89_inkscape.png "Far Country from ULSA J 89")
 
 Similarly, `farcountry_ulsaj89.svg` is a tracing of a survey of Far
 Country in Gaping Gill where the PNG image (`farcountry_ulsaj89.png`)
@@ -223,7 +223,7 @@ Check the generated `.svx` file can be processed, and then add a
 Processing this file  allows you
 to extract the co-ordinates of the GCPs.
 
-![Inkscape: `mossdale_ulsaj89.png` plus artifical survey lines.](mossdale_ulsaj89_inkscape.png "Mossdale Caverns from ULSA J 89"){width=80%}
+![Inkscape: `mossdale_ulsaj89.png` plus artifical survey lines.](mossdale_ulsaj89_inkscape.png "Mossdale Caverns from ULSA J 89")
 
 For example suppose one wanted to georeference the ULSA 1989 Mossdale
 survey, which is included here as `mossdale_ulsaj89.png`.  The
@@ -232,7 +232,7 @@ original of this was downloaded from [CaveMaps](http://cavemaps.org/
 has been reduced to a binary (2-colour) image.  The image is imported
 into inkscape and the scale bar (500ft = 152.4m) and North arrow
 traced (conveniently, the survey uses true North, so magnetic
-declination need not be corrected).  To georeference this the simplest
+declination need not be corrected).  To georeference, the simplest
 approach is to add a single line connecting the entrance to a distant
 identifiable feature in the cave, for example the small chamber shown
 at the end of the Stream End Cave passage.  This line will be exported
@@ -306,9 +306,9 @@ Since it is also georeferenced (by the `*cs` commands) the survex
 centreline data can also be imported into QGIS using
 a [QGIS plugin](https://github.com/patrickbwarren/qgis-survex-import) or a
 [QGIS3 plugin](https://github.com/patrickbwarren/qgis3-survex-import).
-The result, superimposed on an [Open Street Map](https://www.openstreetmap.org/) background is here:
+The combined result, superimposed on an [Open Street Map](https://www.openstreetmap.org/) background, is here:
 
-![QGIS3: `mossdale_ulsaj89.tiff` plus artificial survey line and Open Street Map data](mossdale_ulsaj89_qgis3.png "Mossdale Caverns from ULSA J 89 plus Open Street Map data."){width=80%}
+![QGIS3: `mossdale_ulsaj89.tiff` plus artificial survey line and Open Street Map data](mossdale_ulsaj89_qgis3.png "Mossdale Caverns from ULSA J 89 plus Open Street Map data.")
 
 ### Copying
 
@@ -329,3 +329,4 @@ along with this program.  If not, see
 ### Copyright
 
 This program is copyright &copy; 2015, 2020 Patrick B Warren.
+Survey copyrights &copy; are retained by original copyright holders.
