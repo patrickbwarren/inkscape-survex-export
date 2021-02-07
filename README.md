@@ -20,44 +20,34 @@ unix, or `%APPDATA%\inkscape\extensions\` on Windows).
 
 ### Usage
 
-Usually the drawing will be made by tracing over a scannned image of a
-drawn-up survey.  The following conventions are observed:
+The extension appears under Extensions &rarr; Export  &rarr;
+Export drawing to .svx file&hellip;
+
+The following
+conventions are observed:
 
 * all (poly)lines of a given color are converted to traverses in the survex file;
 * a line of a second color determines the orientation (default S to N);
-* a line of a third color sets the scale (eg from the scale bar);
+* a line of a third color sets the scale (eg from the scale bar).
 
 Lines of any other color are ignored, as are other drawing objects.
 The colors are set by color tabs in the dialog box.
 
-The extension appears under Extensions &rarr; Export  &rarr;
-Export drawing to .svx file&hellip;
-
-In the subsequent dialog box, under the Parameters tab:
-
-* the directory and `.svx` file name should be set;
-* specify at least:
-    + the length of scalebar line (in m);
-    + the bearing of orientation line (in degrees);
-    + tolerance to equate stations (in m);
-* optionally restrict conversion to a named layer [*].
-
-[*] The orientation and scalebar lines are picked up irrespective of
-the layer.
-
-Traverses generated from (poly)lines are captured in separate `*begin`
-and `*end` blocks in the survex file.  The Inkscape path id is used for the
-block name, so traverses can be matched up to paths in Inkscape. The
+Exported (poly)lines are converted to traverses.  If there is more
+than one traverse, each one is captured in a separate `*begin` and
+`*end` block in the survex file using Inkscape path name so that
+individual traverses can be matched up to the drawn paths. The
 survey as a whole is wrapped in a top level `*begin` and `*end` block
-with a name corresponding to the `.svx` file name following standard conventions.
+with a name corresponding to the `.svx` file name following standard
+conventions.
 
 Within each traverse, survey legs are generated in the format
 
 `*data normal from to tape compass clino`
 
-In this format:
+where:
 
-* The `from` and `to` stations are generated automatically.
+* The `from` and `to` stations are integers generated automatically.
 
 * The `tape` length is generated using the scale line as reference,
 which will usually be traced over a scale bar in the survey.  The true
@@ -73,16 +63,16 @@ Parameters tab in the export dialogue box.
 * The `clino` reading is set to zero.
 
 Survey stations that are closer than a given specification are assumed
-to be the same and given as an `*equate` list at the start.  The
-tolerance to select these is usually small (eg 0.2m) and can be
-adjusted in the Parameters tab in the export dialogue box.  Stations
-which feature in the `*equate` list are automatically exported out of
-the underlying `*begin` and `*end` block by the appropriate `*export`
-commands.
+to be the same and given as an `*equate` at the start of the `.svx`
+file.  The tolerance to select these (eg 0.2m) can be adjusted in the
+Parameters tab in the export dialogue box.  Stations which feature in
+these `*equate`s are automatically exported out of the underlying
+`*begin` and `*end` block by the appropriate `*export` commands.
 
 ### Workflow
 
-A typical workflow using Inkscape might be as follows:
+Usually the drawing will be made by tracing over a scannned image of a
+drawn-up survey.  A typical workflow might be as follows:
 
 * start a new Inkscape document;
 * import (link or embed) a scanned survey as an image;
@@ -95,12 +85,18 @@ A typical workflow using Inkscape might be as follows:
     + adjust the positions of nodes which are supposed to represent the same
       survey station until they are coincident (within the tolerance);
 * optionally save the Inkscape file to preserve metadata;
-* do Extensions &rarr; Export &rarr; Export drawing to .svx file&hellip; ;
-* in the dialogue box that appears, in the Parameters tab:
-    + choose a file name
-    + fill in the length which corresponds to the traced scalebar;
-    + if necessary adjust the bearing represented by the orientation line;
-    + click on Apply.
+* then do Extensions &rarr; Export &rarr; Export drawing to .svx file&hellip; 
+
+In the subsequent dialog box, under the Parameters tab:
+
+* an existing directory should be selected;
+* the `.svx` file should be set from one of the options;
+* then specify:
+    + the length of scalebar line (in m);
+    + the bearing of orientation line (in degrees);
+    + the tolerance to equate stations (in m);
+* optionally restrict export to a named layer;
+* click on Apply.
 
 A box should appear reporting that the `.svx` file has been generated
 successfully.  If the conversion encounters errors, they are similarly
@@ -109,7 +105,12 @@ for processing by survex.
 
 Notes:
 
-1. If Survex complains with an error
+1. The orientation and scalebar lines are picked up irrespective of
+the layer selection.
+
+2. Path names in Inkscape can be set by Object &rarr; Object properties&hellip; 
+
+3. If survex complains with an error
 'Survey not all connected to fixed stations', then it is most likely a
 pair of supposedly coincident survey stations are not close enough
 together.  To diagnose this:
@@ -119,19 +120,19 @@ together.  To diagnose this:
     `*equate` commands to see which stations were too far apart;
     + return to Inkscape and fix the problem.
 
-2. It is suggested that magnetic N _not_ be corrected for using the
+4. It is suggested that magnetic N _not_ be corrected for using the
 'bearing' setting in the Parameters tab.  Instead one can add a
-`*calibrate declination` line by hand to the top of the survex
-file, where the angle is positive for declination W. The
-[NOAA website](http://www.ngdc.noaa.gov/geomag-web/ "NOAA geomagnetic
+`*calibrate declination` line by hand to the top of the survex file,
+where the angle is positive for declination W. The [NOAA
+website](http://www.ngdc.noaa.gov/geomag-web/ "NOAA geomagnetic
 calculators") can be consulted to obtain declination data for a given
-location and year.  Alternatively (better) the
-declination can be corrected automatically using `*cs` commands and
-a `*declination auto` command.  The design choice to export legs as `tape` and
-`compass` readings, rather than as cartesian changes in easting and
-northing, was made precisely to accommodate this.
+location and year.  Alternatively (better) the declination can be
+corrected automatically using `*cs` commands and a `*declination auto`
+command (with a `*date`).  The design choice to export legs as `tape` and `compass`
+readings, rather than as cartesian changes in easting and northing,
+was made precisely to accommodate this.
 
-3. Depth information can be added by hand by editing the `.svx` file.
+5. Depth information can be added by hand by editing the `.svx` file.
 A convenient way to do this is to change the survey data type to
 `*data cylpolar from to tape compass depthchange`.  The final column
 (which originally contained zero `clino` entries) can be edited to
@@ -139,7 +140,7 @@ reflect the depth change between survey stations, whilst preserving
 the `tape` and `compass` entries which are presumably correct if taken
 from a drawn-up survey in plan view.
 
-4. A large survey can be dealt with by partitioning the
+6. A large survey can be dealt with by partitioning the
 (poly)lines into different, named layers, keeping the same scale bar
 and orientation line, but generating a different survex files for each
 named layer.  These survex files can be stitched together using a
@@ -147,8 +148,6 @@ master file as illustrated below. Some hand editing has to be done to
 match up the corresponding stations in the different survey data
 files and it may be necessary to export these stations through
 the `*begin` and `*end` blocks in each file.
-
-5. Path names in Inkscape can be set by Object &rarr; Object properties&hellip; 
 
 ### Examples
 
@@ -159,8 +158,8 @@ Ranger series in Link Pot (Easegill) where the PNG image
 (`loneranger_cpcj6-2.png`) &ndash; originally published in CPC Journal 6(2)
 &ndash; is taken from [CaveMaps](http://cavemaps.org/ "CaveMaps home
 page").  The scale line end-end distance is 30 m, so 'Length of
-scale line (in m)' in the Parameters tab would be set
-to 30.0. 
+scale line (in m)' in the Parameters tab should be set
+to 30.0 (obviously!). 
 
 ![Inkscape: `far_country_ulsaj89.png` plus traced survey lines.](farcountry_ulsaj89_inkscape.png "Far Country from ULSA J 89")
 
@@ -251,16 +250,19 @@ OSGB36 co-ordinate reference system.  The 6-figure NGR SE 016697 given
 on the survey is correct of course, but as it locates the entrance
 only to within a 100m square it's not really accurate enough.
 
-We add these entrance co-ordinates to the survex file together with a
-pair of convenience `*cs` commands to georeference the `.svx` file.  I
-choose here to specify the entrance using the 10-figure NGR in the SE
-square of the British National Grid (BNG), and specify the output to
-be in the `EPSG:7405` co-ordinate reference system (CRS) which stands
-for the BNG plus the ODN (Ordnance Datum Newlyn) height.  This may
-seem overkill but it gets the CRS meta-data into the `.3d` file in a
-form suitable for onward processing.
+I add these entrance co-ordinates to the survex file together with a
+pair of convenience `*cs` commands to georeference the `.svx` file:
+choosing here to `*fix` the entrance using a 10-figure NGR in the SE
+square of the British National Grid (BNG), and specifying the output to
+be in the `EPSG:7405` (BNG plus ODN) co-ordinate reference system
+(CRS).  This may seem overkill but it gets the CRS meta-data into the
+`.3d` file in a form suitable for onward processing.  Also I have
+adopted the convention of exporting the entrance (station `0` in
+`path4342`) out to the top level, and equating it to a new station
+named `entrance`.  Finally, the entrance altitude (1400ft = 425m) has
+been added, although irrelevant for present purposes.
 
-Thus the file (`mossdale_ulsaj89.svx`) contains
+Thus the final file (`mossdale_ulsaj89.svx`) contains
 ```
 *cs OSGB:SE
 *cs out EPSG:7405
@@ -281,10 +283,6 @@ Thus the file (`mossdale_ulsaj89.svx`) contains
 
 *end mossdale_ulsaj89
 ```
-I have adopted the convention of exporting
-the entrance (station `0` in `path4342`) out to the top level, and
-equating it to a new station named `entrance`.  Also the altitude
-(1400ft = 425m) has been added, although irrelevant for present purposes.
 
 On processing by `cavern` and `3dtopos` the result
 is

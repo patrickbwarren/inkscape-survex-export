@@ -169,10 +169,12 @@ class ExportSurvex(inkex.EffectExtension):
         
         color = str(self.options.path_color.to_rgb())
         self.poly_lines = list(filter(lambda el: el['stroke'] == color, self.poly_lines))
+
         if self.options.restrict:
             if current_layer is None:
                 raise inkex.AbortExtension('No layer selected to filter on')
             self.poly_lines = list(filter(lambda el: el['layer'] == current_layer, self.poly_lines))
+            
         if not self.poly_lines:
             sys.stderr.write('No exportable lines found\n')
             sys.stderr.write('(check settings in color tabs and/or layer selection)\n')
@@ -180,16 +182,12 @@ class ExportSurvex(inkex.EffectExtension):
 
         # Check the (poly)lines comprise straight line segments
 
-        try:
-            for line in self.poly_lines:
-                for seg in line['path']:
-                    if not isinstance(seg, (inkex.paths.Move, inkex.paths.Line)):
-                        raise PathError(f"{line['id']}")
-        except PathError as path_id:
-            sys.stderr.write(f'{path_id} contains curved segments\n')
-            sys.stderr.write('This can be fixed by selecting all paths, then selecting all nodes\n')
-            sys.stderr.write("in node edit mode, and applying 'Make selected segments lines'\n")
-            raise inkex.AbortExtension
+        for line in self.poly_lines:
+            for seg in line['path']:
+                if not isinstance(seg, (inkex.paths.Move, inkex.paths.Line)):
+                    sys.stderr.write('The below can be fixed by selecting all paths, then selecting all nodes\n')
+                    sys.stderr.write("in node edit mode, and applying 'Make selected segments lines'\n")
+                    raise inkex.AbortExtension(f"{line['id']} contains curved segments\n")
 
         # Now build the survex traverses:
 
@@ -275,30 +273,31 @@ class ExportSurvex(inkex.EffectExtension):
             f.write(f"; SVG orientation: vector ({ex:0.3f}, {ey:0.3f}) is {self.round360(self.options.north+90):0.1f} degrees\n")
             f.write(f"; SVG scale: {scale_len:0.2f} units = {self.options.scale:0.1f} m, scale factor {scale_fac:0.4f}\n")
             f.write(f"; SVG contained {ntraverse} traverses and {nstation} stations\n")
-            f.write(f"; SVG tolerance for identifying equates {self.options.tol:0.2f} m\n\n")
-            
-            f.write(f"*begin {top_level}\n\n")
+            f.write(f"; SVG tolerance for identifying equates {self.options.tol:0.2f} m\n")
+
+            f.write(f"\n*begin {top_level}\n")
 
             if equates:
+                f.write('\n')
                 for el in equates:
                     stations = [f"{station['traverse']}.{station['id']}" for station in el['pair']]
                     f.write(f"*equate {stations[0]} {stations[1]} ; separation {el['sepn']:0.3f} m\n")
-                f.write('\n')
 
-            f.write("*data normal from to tape compass clino\n\n")
+            f.write("\n*data normal from to tape compass clino\n")
 
             for traverse in traverses:
-                f.write(f"*begin {traverse['id']}\n")
+                if len(traverses) > 1:
+                    f.write(f"\n*begin {traverse['id']}\n")
                 if exportd[traverse['id']]:
                     f.write('*export ' + ' '.join(map(str, sorted(exportd[traverse['id']]))) + '\n')
                 f.write('\n')
                 for leg in traverse['legs']:
-                    #f.write(f"%3s %3s %7.2f %s 0\n" % (leg['from'], leg['to'], leg['tape'], self.sprintd(leg['compass'])))
                     f.write(f"{leg['from']:3s} {leg['to']:3s} {leg['tape']:8.3f} {self.round360(leg['compass']):6.1f} 0\n")
-                f.write(f"\n*end {traverse['id']}\n\n")
+                if len(traverses) > 1:
+                    f.write(f"\n*end {traverse['id']}\n")
 
-            f.write(f"*end {top_level}\n\n")
-            f.write("; end of file\n")
+            f.write(f"\n*end {top_level}\n")
+            f.write("\n; end of file\n")
 
         sys.stderr.write(f'Successfully generated {svx_file}\n')
 
