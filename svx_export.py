@@ -3,7 +3,7 @@
 svx_output.py
 Python script for exporting survex (.svx) file from Inkscape
 
-Copyright (C) 2015, 2020 Patrick B Warren
+Copyright (C) 2015, 2020, 2021 Patrick B Warren
 
 Email: patrickbwarren@gmail.com
 
@@ -77,24 +77,24 @@ class ExportSurvex(inkex.EffectExtension):
 
     def add_arguments(self, pars):
 
-        pars.add_argument('--tab', help='Dummy argument')
-        pars.add_argument('--directory', default=os.path.expanduser('~'), help='Destination directory')
-        pars.add_argument('--file', help='Destination .svx file (with or without extension)')
-        pars.add_argument('--option', help='File name defaults')
-        pars.add_argument('--restrict', type=inkex.Boolean, help='Restrict export to current layer')
-        pars.add_argument('--overwrite', type=inkex.Boolean, help='Overwrite .svx file if it already exists')
-        pars.add_argument('--scale', type=float, default=100.0, help='Length of scale bar (in m)')
-        pars.add_argument('--north', type=float, default=0.0, help='Bearing for orientation line (in degrees)')
-        pars.add_argument('--tol', type=float, default=0.2, help='Tolerance to equate stations (in m)')
+        pars.add_argument('--tab', help="Dummy argument")
+        pars.add_argument('--directory', default=os.path.expanduser('~'), help="Destination directory")
+        pars.add_argument('--file', help="Destination .svx file (with or without extension)")
+        pars.add_argument('--option', help="File name defaults")
+        pars.add_argument('--restrict', type=inkex.Boolean, help="Restrict export to current layer")
+        pars.add_argument('--overwrite', type=inkex.Boolean, help="Overwrite .svx file if it already exists")
+        pars.add_argument('--scale', type=float, default=100.0, help="Length of scale bar (in m)")
+        pars.add_argument('--north', type=float, default=0.0, help="Bearing for orientation line (in degrees)")
+        pars.add_argument('--tol', type=float, default=0.2, help="Tolerance to equate stations (in m)")
         pars.add_argument('--path-color', type=inkex.Color, default=inkex.Color("red"), help="Path export color")
-        pars.add_argument('--orient-color', type=inkex.Color, default=inkex.Color("green"), help="Path export color")
-        pars.add_argument('--scale-color', type=inkex.Color, default=inkex.Color("blue"), help="Path export color")
-        pars.add_argument('--debug', type=inkex.Boolean, help='dump information')
+        pars.add_argument('--scale-color', type=inkex.Color, default=inkex.Color("green"), help="Path export color")
+        pars.add_argument('--orient-color', type=inkex.Color, default=inkex.Color("blue"), help="Path export color")
+        pars.add_argument('--debug', type=inkex.Boolean, help="dump information")
         
     def effect(self):
 
         if not os.path.isdir(self.options.directory):
-            raise inkex.AbortExtension('The specified directory does not exist')
+            raise inkex.AbortExtension("The specified directory does not exist")
 
         # Determine the image file name if there is one
         
@@ -118,16 +118,16 @@ class ExportSurvex(inkex.EffectExtension):
             file_name = img_file
         elif self.options.option == 'layer':
             if current_layer is None:
-                raise inkex.AbortExtension('No layer selected for setting file name')
+                raise inkex.AbortExtension("No layer selected for setting file name")
             file_name = current_layer
 
         if file_name is None:
-            raise inkex.AbortExtension('Could not construct .svx file name (no image etc)')
+            raise inkex.AbortExtension("Could not construct .svx file name (no image etc)")
 
         svx_file = os.path.splitext(file_name)[0] + '.svx'
 
         if os.path.exists(os.path.join(self.options.directory, svx_file)) and not self.options.overwrite:
-            raise inkex.AbortExtension(f'Aborting: {svx_file} already exists, and overwrite box not checked')
+            raise inkex.AbortExtension(f"Aborting: {svx_file} already exists, and overwrite box not checked")
 
         # Find all the polylines in the drawing as a list of dicts of
         # (path, id, stroke, layer); path_clean removes Horz and Vert to
@@ -172,12 +172,12 @@ class ExportSurvex(inkex.EffectExtension):
 
         if self.options.restrict:
             if current_layer is None:
-                raise inkex.AbortExtension('No layer selected to filter on')
+                raise inkex.AbortExtension("No layer selected to filter on")
             self.poly_lines = list(filter(lambda el: el['layer'] == current_layer, self.poly_lines))
             
         if not self.poly_lines:
-            sys.stderr.write('No exportable lines found\n')
-            sys.stderr.write('(check settings in color tabs and/or layer selection)\n')
+            sys.stderr.write("No exportable lines found\n")
+            sys.stderr.write("(check settings in color tabs and/or layer selection)\n")
             raise inkex.AbortExtension
 
         # Check the (poly)lines comprise straight line segments
@@ -185,7 +185,7 @@ class ExportSurvex(inkex.EffectExtension):
         for line in self.poly_lines:
             for seg in line['path']:
                 if not isinstance(seg, (inkex.paths.Move, inkex.paths.Line)):
-                    sys.stderr.write('The below can be fixed by selecting all paths, then selecting all nodes\n')
+                    sys.stderr.write("The below can be fixed by selecting all paths, then selecting all nodes\n")
                     sys.stderr.write("in node edit mode, and applying 'Make selected segments lines'\n")
                     raise inkex.AbortExtension(f"{line['id']} contains curved segments\n")
 
@@ -289,7 +289,7 @@ class ExportSurvex(inkex.EffectExtension):
                 if len(traverses) > 1:
                     f.write(f"\n*begin {traverse['id']}\n")
                 if exportd[traverse['id']]:
-                    f.write('*export ' + ' '.join(map(str, sorted(exportd[traverse['id']]))) + '\n')
+                    f.write("*export " + ' '.join(map(str, sorted(exportd[traverse['id']]))) + '\n')
                 f.write('\n')
                 for leg in traverse['legs']:
                     f.write(f"{leg['from']:3s} {leg['to']:3s} {leg['tape']:8.3f} {self.round360(leg['compass']):6.1f} 0\n")
@@ -299,7 +299,7 @@ class ExportSurvex(inkex.EffectExtension):
             f.write(f"\n*end {top_level}\n")
             f.write("\n; end of file\n")
 
-        sys.stderr.write(f'Successfully generated {svx_file}\n')
+        sys.stderr.write(f"Successfully generated {svx_file}\n")
 
 if __name__ == "__main__":
     ExportSurvex().run()

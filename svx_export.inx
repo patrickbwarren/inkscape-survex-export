@@ -3,7 +3,7 @@
 svx_export.inx
 Export polylines to .svx file
 
-Copyright (C) 2018, 2020 Patrick B Warren
+Copyright (C) 2018, 2020, 2021 Patrick B Warren
 Email: patrickbwarren@gmail.com
 
 This program is free software: you can redistribute it and/or modify
@@ -32,12 +32,12 @@ along with this program.  If not, see
 	<option value="layer">from selected layer name</option>
 	<option value="specified">as specified in box below</option>
       </param>
-      <param name="file" type="string" gui-text="(optionally including .svx):"></param>
+      <param name="file" type="string" gui-text="(optional file extension .svx):"></param>
       <param name="overwrite" type="bool" gui-text="overwrite file if it already exists"></param>
       <spacer/>
-      <param name="scale" type="float" precision="2" min="0" max="9999" gui-text="Length of scalebar line (in m):">100.00</param>
+      <param name="scale" type="float" precision="2" min="0" max="9999" gui-text="Length of scalebar line (eg in m):">100.00</param>
       <param name="north" type="float" precision="1" min="0" max="360" gui-text="Bearing of orientation line (in degrees):">0.0</param>
-      <param name="tol" type="float" precision="2" min="0" max="9999" gui-text="Tolerance to equate stations (in m):">0.2</param>
+      <param name="tol" type="float" precision="2" min="0" max="9999" gui-text="Tolerance to equate stations (eg in m):">0.2</param>
       <param name="restrict" type="bool" gui-text="restrict conversion to selected layer"></param>
     </page>
     <page name="path-colorm" gui-text="Export color">
@@ -52,10 +52,10 @@ along with this program.  If not, see
   </param>
   <spacer/>
   <label>The following conventions are observed:</label>
-  <label> * exported (poly)lines are converted to traverses;</label>
-  <label> * the orientation line determines the orientation (default S to N);</label>
-  <label> * the scalebar line defines the scale.</label>
-  <label>(Remember to set the colors in the color tabs!)</label>
+  <label> * exported (poly)lines (default red) are converted to traverses;</label>
+  <label> * the orientation line (default blue) is S to N for bearing = 0.0;</label>
+  <label> * the scalebar line (default green) sets the scale conversion.</label>
+  <label>The default colors can be changed in the color tabs.</label>
   <effect needs-live-preview="false" needs-document="true">
     <object-type>all</object-type>
     <effects-menu>
