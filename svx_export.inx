@@ -43,11 +43,11 @@ along with this program.  If not, see
     <page name="path-colorm" gui-text="Export color">
       <param name="path-color" type="color" gui-text="Color of (poly)lines for export"></param>
     </page>
-    <page name="orient-color" gui-text="Orient color">
-      <param name="orient-color" type="color" gui-text="Color of orientation line"></param>
-    </page>
     <page name="scale-color" gui-text="Scalebar color">
       <param name="scale-color" type="color" gui-text="Color of scalebar line"></param>
+    </page>
+    <page name="orient-color" gui-text="Orient color">
+      <param name="orient-color" type="color" gui-text="Color of orientation line"></param>
     </page>
   </param>
   <spacer/>

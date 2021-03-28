@@ -87,8 +87,8 @@ class ExportSurvex(inkex.EffectExtension):
         pars.add_argument('--north', type=float, default=0.0, help="Bearing for orientation line (in degrees)")
         pars.add_argument('--tol', type=float, default=0.2, help="Tolerance to equate stations (in m)")
         pars.add_argument('--path-color', type=inkex.Color, default=inkex.Color("red"), help="Path export color")
-        pars.add_argument('--scale-color', type=inkex.Color, default=inkex.Color("green"), help="Path export color")
-        pars.add_argument('--orient-color', type=inkex.Color, default=inkex.Color("blue"), help="Path export color")
+        pars.add_argument('--scale-color', type=inkex.Color, default=inkex.Color("blue"), help="Path export color")
+        pars.add_argument('--orient-color', type=inkex.Color, default=inkex.Color("green"), help="Path export color")
         pars.add_argument('--debug', type=inkex.Boolean, help="dump information")
         
     def effect(self):

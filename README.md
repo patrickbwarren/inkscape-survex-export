@@ -13,6 +13,9 @@ Use-cases include:
 
 A couple of example surveys (Inkscape traced drawings) are also included.
 
+This documentation is also available in [PDF](README.pdf) and
+[HTML](README.html).
+
 ### Installation
 
 Copy the files `svx_export.py` and `svx_export.inx` into your local
@@ -26,12 +29,12 @@ Export drawing to .svx file&hellip;
 
 The following conventions are observed:
 
-* all (poly)lines of a given color (default red) are converted to traverses in the survex file;
-* a line of a second color (default blue) determines the orientation (default S to N);
-* a line of a third color (default green) sets the scale (eg from the scale bar).
+* all (poly)lines of a given color (default _red_) are converted to traverses in the survex file;
+* a line of a second color (default _blue_) sets the scale (eg from the scale bar);
+* a line of a third color (default _green_) determines the orientation (default S to N).
 
 Lines of any other color are ignored, as are other drawing objects.
-The default colors can be changed in the color tabs in the dialog box.
+The default _colors_ can be changed in the color tabs in the dialog box.
 
 Exported (poly)lines are converted to traverses.  If there is more
 than one traverse, each one is captured in a separate `*begin` and
@@ -79,10 +82,10 @@ drawn-up survey.  A typical workflow might be as follows:
 * import (link or embed) a scanned survey as an image;
 * optionally, lock the layer containing the image and create a new layer to work in;
 * then do the following (the default _colors_ here can be changed in the export dialog):
-    + trace the scale bar in _red_, making a note of the distance
+    + trace the scale bar in _blue_, making a note of the distance
       this represents,
-    + trace an orientation feature in _blue_ (eg a North arrow, from S to N),
-    + trace the desired survey traverse lines in _green_,
+    + trace an orientation feature in _green_ (eg a North arrow, from S to N),
+    + trace the desired survey traverse lines in _red_,
     + adjust the positions of nodes which are supposed to represent the same
       survey station until they are coincident (within the tolerance);
 * optionally save the Inkscape file to preserve metadata;
@@ -107,7 +110,10 @@ for processing by survex.
 Notes:
 
 1. The orientation and scalebar lines are picked up irrespective of
-the layer selection.
+the layer selection.  _BE CAREFUL not to get the colors of the
+orientation and scalebar lines mixed up._ There's no other way to tell
+them apart; the conversion step cannot know the difference and no
+warning or error will be raised.
 
 2. Path names in Inkscape can be set by Object &rarr; Object properties&hellip; 
 
@@ -150,9 +156,16 @@ match up the corresponding stations in the different survey data
 files and it may be necessary to export these stations through
 the `*begin` and `*end` blocks in each file.
 
+7. Where it's not obvious what the scale bar represents or the units
+conversion I often find it convenient to add a note in the form of a
+text block to the Inkscape `.svg` file as in the examples below. In a
+similar vein one can add an arrow to the _end_ of the orientation line
+to affirm the direction, also done in the examples below.  This
+doesn't affect the conversion.
+
 ### Examples
 
-![Inkscape: `lonerange_cpcj6-2.png` plus traced survey lines.](loneranger_cpcj6-2_inkscape.png "Lone Ranger Series from CPC J vol 6(2)")
+![Inkscape: `loneranger_cpcj6-2.png` plus traced survey lines.](loneranger_cpcj6-2_inkscape.png "Lone Ranger Series from CPC J vol 6(2)")
 
 The file `loneranger_cpcj6-2.svg` is a tracing of a survey of the Lone
 Ranger series in Link Pot (Easegill) where the PNG image
@@ -160,7 +173,7 @@ Ranger series in Link Pot (Easegill) where the PNG image
 &ndash; is taken from [CaveMaps](http://cavemaps.org/ "CaveMaps home
 page").  The scale line end-end distance is 30 m, so 'Length of
 scale line (in m)' in the Parameters tab should be set
-to 30.0 (obviously!). 
+to 30.0. 
 
 ![Inkscape: `far_country_ulsaj89.png` plus traced survey lines.](farcountry_ulsaj89_inkscape.png "Far Country from ULSA J 89")
 
@@ -247,20 +260,21 @@ or perhaps more conveniently make a virtual site visit using
 [MagicMap](http://www.magic.gov.uk/magicmap.aspx "Magic Map") website
 and use the 'Where am I?' option to find the entrance is at `(E, N) =
 (401667, 469779)`.  This is the full 12-figure National Grid Reference
-(NGR) in the British National Grid (BNG).  The 6-figure NGR SE
-016697 given on the survey is correct of course, but as it locates the
-entrance only to within a 100m square it's not really accurate enough.
+(NGR).  The 6-figure NGR SE 016697 given on the survey is correct of
+course, but as it locates the entrance only to within a 100m square
+it's not really accurate enough.
 
 These entrance co-ordinates are added to the survex file together with
 a a couple of `*cs` commands to georeference the same: choosing here
-to `*fix` the entrance using a 10-figure NGR in the SE square of BNG,
-and specifying the output spatial reference system (SRS) to be
-`EPSG:27700` for the fully numeric BNG.  This may seem overkill but it
-gets the SRS meta-data into the `.3d` file in a form suitable for
+to `*fix` the entrance using a 10-figure NGR in the Ordnance Survey SE square,
+and specifying the output co-ordinate reference system* (CRS) to be
+`EPSG:27700` for the fully numeric NGR.  This may seem overkill but it
+gets the CRS meta-data into the `.3d` file in a form suitable for
 onward processing.  Also I have adopted the convention of equating the
 entrance to a new station named `entrance` and fixing that.  Finally,
 the entrance altitude (1400ft = 425m) has been added, although
-irrelevant for present purposes.
+irrelevant for present purposes.  
+*Also known as a 'spatial reference system' (SRS).
 
 Thus the final file (`mossdale_ulsaj89.svx`) contains
 ```
@@ -275,7 +289,7 @@ Thus the final file (`mossdale_ulsaj89.svx`) contains
 
 *data normal from to tape compass clino
 
-0   1   1635.906   22.2 0
+0   1   1383.460  112.7 0
 
 *end mossdale_ulsaj89
 ```
@@ -289,16 +303,15 @@ is
 ( Easting, Northing, Altitude )
 (401667.00, 469779.00,   425.00 ) entrance
 (401667.00, 469779.00,   425.00 ) mossdale_ulsaj89.0
-(402285.11, 471293.64,   425.00 ) mossdale_ulsaj89.1
+(402943.29, 469245.11,   425.00 ) mossdale_ulsaj89.1
 ```
 (saved as `mossdale_ulsaj89.pos`).  The two entries give the
-co-ordinates of the GCPs in the `EPSG:27700` SRS and we can now
+co-ordinates of the GCPs in the `EPSG:27700` CRS and we can now
 proceed to georeference the image file, using for example [QGIS](http://www.qgis.org/ "QGIS website").
 The final result, here provided
 as `mossdale_ulsaj89.tiff` in [GeoTIFF](https://en.wikipedia.org/wiki/GeoTIFF "GeoTIFF on Wikipedia") format, can be
 directly imported into a GIS platform such as [QGIS](http://www.qgis.org/ "QGIS website"), and superimposed on Google
 satellite imagery, or the Environment Agency LIDAR data, for example.
-Note that an SRS is called a CRS (co-ordinate reference system) in QGIS.
 
 Since it is also georeferenced (by the `*cs` commands) the survex
 centreline data can also be imported into QGIS using

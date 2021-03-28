@@ -12,21 +12,36 @@
    inkscape:export-xdpi="96"
    inkscape:export-filename="/home/patrick/GitHub/inkscape-survex-export/farcountry_ulsaj89_inkscape.png"
    sodipodi:docname="farcountry_ulsaj89.svg"
-   inkscape:version="1.0 (4035a4fb49, 2020-05-01)"
+   inkscape:version="1.0.2 (e86c870879, 2021-01-15)"
    version="1.1"
    id="svg2"
    viewBox="0 0 1052.3622 744.09448"
    height="210mm"
    width="297mm">
   <defs
-     id="defs4" />
+     id="defs4">
+    <marker
+       style="overflow:visible;"
+       id="Arrow1Lend"
+       refX="0.0"
+       refY="0.0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:isstock="true">
+      <path
+         transform="scale(0.8) rotate(180) translate(12.5,0)"
+         style="fill-rule:evenodd;stroke:#00ff00;stroke-width:1pt;stroke-opacity:1;fill:#00ff00;fill-opacity:1"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         id="path856" />
+    </marker>
+  </defs>
   <sodipodi:namedview
      inkscape:document-rotation="0"
      inkscape:window-maximized="0"
-     inkscape:window-y="27"
-     inkscape:window-x="140"
+     inkscape:window-y="15"
+     inkscape:window-x="120"
      inkscape:window-height="1001"
-     inkscape:window-width="1520"
+     inkscape:window-width="1591"
      showgrid="false"
      inkscape:current-layer="layer2"
      inkscape:document-units="px"
@@ -56,7 +71,8 @@
      transform="translate(0,-308.26772)"
      id="layer1"
      inkscape:groupmode="layer"
-     inkscape:label="image">
+     inkscape:label="image"
+     sodipodi:insensitive="true">
     <image
        sodipodi:absref="/home/patrick/GitHub/inkscape-survex-export/farcountry_ulsaj89.png"
        xlink:href="farcountry_ulsaj89.png"
@@ -77,7 +93,7 @@
        inkscape:connector-curvature="0"
        id="path4148"
        d="M 931.83509,252.40273 780.68204,124.88366"
-       style="fill:none;fill-rule:evenodd;stroke:#00ff00;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+       style="fill:none;fill-rule:evenodd;stroke:#00ff00;stroke-width:1.00031;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow1Lend)" />
     <path
        inkscape:connector-curvature="0"
        id="path4152"
@@ -206,5 +222,21 @@
        id="path4199"
        d="m 944.6875,416.54984 -3.97321,-17.63393 12.14285,-21.96429 10.71429,-14.64285 20.53571,2.5"
        style="fill:none;fill-rule:evenodd;stroke:#ff0000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:37.5px;line-height:0.75;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.9375"
+       x="792.34192"
+       y="237.93513"
+       id="text863"><tspan
+         sodipodi:role="line"
+         id="tspan861"
+         x="792.34192"
+         y="237.93513"
+         style="font-size:22.5px;text-align:center;text-anchor:middle;fill:#0000ff;stroke-width:0.9375">Scalebar </tspan><tspan
+         sodipodi:role="line"
+         x="792.34192"
+         y="266.06012"
+         style="font-size:22.5px;text-align:center;text-anchor:middle;fill:#0000ff;stroke-width:0.9375"
+         id="tspan865">200 ft = 60.96 m</tspan></text>
   </g>
 </svg>
