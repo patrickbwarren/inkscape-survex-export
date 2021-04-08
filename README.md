@@ -1,5 +1,7 @@
 ## Export an inkscape line drawing to a survex file
 
+* _Coming in 3.0 - elevations - just needs documenting properly_
+
 * _v2.1 minor improvements_
 * _v2.0 completely rewritten for Inkscape 1.0_
 * _v1.1 for Inkscape 0.92_
