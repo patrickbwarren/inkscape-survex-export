@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """
 svx_output.py
-Python script for exporting survex (.svx) file from Inkscape
+Python script for exporting survex (.svx) file from Inkscape plan
 
 Copyright (C) 2015, 2020, 2021 Patrick B Warren
 
@@ -31,6 +31,17 @@ from math import sqrt, atan2, degrees
 
 class PathError(Exception):
     pass
+
+class splayFlags(object): # context manager used for splay flags
+    def __init__(self, splay_flag, fp):
+        self.splay_flag = splay_flag
+        self.fp = fp
+    def __enter__(self):
+        if self.splay_flag:
+            self.fp.write("*flags splay\n")
+    def __exit__(self, exc_type, exc_value, traceback):
+        if self.splay_flag:
+            self.fp.write("*flags not splay\n")
 
 class ExportSurvex(inkex.EffectExtension):
 
@@ -83,6 +94,7 @@ class ExportSurvex(inkex.EffectExtension):
         pars.add_argument('--option', help="File name defaults")
         pars.add_argument('--restrict', type=inkex.Boolean, help="Restrict export to current layer")
         pars.add_argument('--overwrite', type=inkex.Boolean, help="Overwrite .svx file if it already exists")
+        pars.add_argument('--splay', type=inkex.Boolean, help="Interpret dashed lines as splays")
         pars.add_argument('--scale', type=float, default=100.0, help="Length of scale bar (in m)")
         pars.add_argument('--north', type=float, default=0.0, help="Bearing for orientation line (in degrees)")
         pars.add_argument('--tol', type=float, default=0.2, help="Tolerance to equate stations (in m)")
@@ -130,18 +142,22 @@ class ExportSurvex(inkex.EffectExtension):
             raise inkex.AbortExtension(f"Aborting: {svx_file} already exists, and overwrite box not checked")
 
         # Find all the polylines in the drawing as a list of dicts of
-        # (path, id, stroke, layer); path_clean removes Horz and Vert to
-        # make path a list of inkex AbsolutePathCommands (Line, Move).
+        # (path, id, stroke, dashed, layer); path_clean removes Horz and Vert
+        # to make path a list of inkex AbsolutePathCommands (Line, Move).
 
         for path in self.svg.findall('.//svg:g/svg:path', namespaces=inkex.NSS):
-            stroke = dict(inkex.Style.parse_str(path.attrib['style']))['stroke']
+            style = dict(inkex.Style.parse_str(path.attrib['style']))
+            stroke = style['stroke']
+            dashed = 'stroke-dasharray' in style and style['stroke-dasharray'] != 'none'
             layer = path.getparent().attrib['{%s}label' % inkex.NSS[u'inkscape']]
             self.poly_lines.append({'path': self.path_clean(path.path),
-                               'id': path.attrib['id'], 'stroke': stroke, 'layer': layer})
+                                    'id': path.attrib['id'], 'stroke': stroke,
+                                    'dashed':dashed, 'layer': layer})
 
         if self.options.debug: # write out all discovered path data
             for line in self.poly_lines:
-                sys.stderr.write(f"{line['layer']}.{line['id']} ({line['stroke']})\n")
+                sys.stderr.write(f"{line['layer']}.{line['id']} ({line['stroke']}; ")
+                sys.stderr.write('dashed)\n' if line['dashed'] else 'solid)\n')
                 for seg in line['path']:
                     sys.stderr.write(f" {seg.letter} {seg.args}\n")
                     
@@ -192,7 +208,7 @@ class ExportSurvex(inkex.EffectExtension):
         # Now build the survex traverses:
 
         # stations is a list of dicts of (traverse_id, station_id, pos),
-        # traverses is a list of dicts of (traverse_id, legs),
+        # traverses is a list of dicts of (traverse_id, legs, splay),
         # legs is a list of dicts of (from_id, to_id, tape, compass).
 
         # Keep track of stations and absolute positions to identify
@@ -211,7 +227,7 @@ class ExportSurvex(inkex.EffectExtension):
                     compass = self.options.north + degrees(atan2(ex*dx+ey*dy, nx*dx+ny*dy))
                     legs.append({'from': str(i-1), 'to': str(i), 'tape': tape, 'compass': compass})
                 prev = pos
-            traverses.append({'id': line['id'], 'legs': legs})
+            traverses.append({'id': line['id'], 'legs': legs, 'splay': line['dashed']})
 
         ntraverse = len(traverses)
         nstation = len(stations)
@@ -291,8 +307,10 @@ class ExportSurvex(inkex.EffectExtension):
                 if exportd[traverse['id']]:
                     f.write("*export " + ' '.join(map(str, sorted(exportd[traverse['id']]))) + '\n')
                 f.write('\n')
-                for leg in traverse['legs']:
-                    f.write(f"{leg['from']:3s} {leg['to']:3s} {leg['tape']:8.3f} {self.round360(leg['compass']):6.1f} 0\n")
+                with splayFlags(self.options.splay and traverse['splay'], f):
+                    for leg in traverse['legs']:
+                        f.write(f"{leg['from']:3s} {leg['to']:3s} {leg['tape']:8.3f} ")
+                        f.write(f"{self.round360(leg['compass']):6.1f} 0.0\n")
                 if len(traverses) > 1:
                     f.write(f"\n*end {traverse['id']}\n")
 

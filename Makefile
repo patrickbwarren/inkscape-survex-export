@@ -20,10 +20,18 @@ FIGS1 = loneranger_cpcj6-2_inkscape.png farcountry_ulsaj89_inkscape.png
 FIGS2 = mossdale_ulsaj89_inkscape.png mossdale_ulsaj89_qgis3.png
 FIGS = $(FIGS1) $(FIGS2)
 
+INSTALL_DIR = ~/.config/inkscape/extensions/
+
+
 default: $(DOCS)
 
 README.html README.pdf: README.md $(FIGS)
 	pandoc -s -o $@ $<
+
+install:
+	cp svx_export.py $(INSTALL_DIR)
+	cp svx_plan_export.inx $(INSTALL_DIR)
+	cp svx_elev_export.inx $(INSTALL_DIR)
 
 clean : 
 	rm -f *~
