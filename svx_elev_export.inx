@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-svx_plan_export.inx
-Export polylines in plan to .svx file
+svx_elev_export.inx
+Export polylines in elevation to .svx file
 
 Copyright (C) 2018, 2020, 2021 Patrick B Warren
 Email: patrickbwarren@gmail.com
@@ -21,8 +21,8 @@ along with this program.  If not, see
 <http://www.gnu.org/licenses/>.
 -->
 <inkscape-extension xmlns="http://www.inkscape.org/namespace/inkscape/extension">
-  <name>Export plan to .svx file</name>
-  <id>org.patrickbwarren.svx_plan_export</id>
+  <name>Export elevation to .svx file</name>
+  <id>org.patrickbwarren.svx_elev_export</id>
   <param name="tab" type="notebook">
     <page name="parameters" gui-text="Parameters">
       <param name="directory" type="path" mode="folder" gui-text="Directory:"></param>
@@ -36,7 +36,7 @@ along with this program.  If not, see
       <param name="overwrite" type="bool" gui-text="overwrite file if it already exists"></param>
       <spacer/>
       <param name="scale" type="float" precision="2" min="0" max="9999" gui-text="Length of scalebar line (eg in m):">100.00</param>
-      <param name="bearing" type="float" precision="1" min="0" max="360" gui-text="Bearing of orientation line (in degrees):">0.0</param>
+      <param name="bearing" type="float" precision="1" min="0" max="360" gui-text="Facing direction (in degrees):">0.0</param>
       <param name="tol" type="float" precision="2" min="0" max="9999" gui-text="Tolerance to equate stations (eg in m):">0.2</param>
       <param name="restrict" type="bool" gui-text="restrict conversion to selected layer"></param>
       <param name="splay" type="bool" gui-text="interpret dashed lines as splays"></param>
@@ -47,18 +47,15 @@ along with this program.  If not, see
     <page name="scale-color" gui-text="Scalebar color">
       <param name="scale-color" type="color" gui-text="Color of scalebar line"></param>
     </page>
-    <page name="orient-color" gui-text="Orient color">
-      <param name="orient-color" type="color" gui-text="Color of orientation line"></param>
-    </page>
   </param>
   <spacer/>
   <label>The following conventions are observed:</label>
   <label> * exported (poly)lines (usually red) are converted to traverses;</label>
   <label> * the scalebar line (usually blue) sets the scale conversion;</label>
-  <label> * the orientation line (usually green) is S to N for bearing = 0.0.</label>
-  <label>The colors can be changed in the color tabs.</label>
+  <label> * the orientation is taken from the facing direction</label>
+  <label>The default colors can be changed in the color tabs.</label>
   <param name="debug" type="bool" gui-hidden="true" gui-text="Generate additional debugging information"></param>
-  <param name="plan" type="bool" gui-hidden="true" gui-text="Select plan (hidden option)">true</param>
+  <param name="plan" type="bool" gui-hidden="true" gui-text="Deselect plan (hidden option)">false</param>
   <effect needs-live-preview="false" needs-document="true">
     <object-type>all</object-type>
     <effects-menu>

@@ -2,10 +2,11 @@
 """svx_output.py
 Python script for exporting survex (.svx) files from Inkscape
 
-The same script is used for both plan and elevation exports since 90%
+The same script is used for both plan and elevation exports since 95%
 of the code is common.  The boolean command line option 'plan' selects
 between them.  In the .inx files, this option is set true or false by
-a gui-hidden parameter.
+a gui-hidden parameter.  For elevation the orientation line color
+selector is similarly gui-hidden and set to a benign default value.
 
 Copyright (C) 2015, 2020, 2021 Patrick B Warren
 
@@ -101,7 +102,7 @@ class ExportSurvex(inkex.EffectExtension):
         pars.add_argument('--overwrite', type=inkex.Boolean, help="Overwrite .svx file if it already exists")
         pars.add_argument('--splay', type=inkex.Boolean, help="Interpret dashed lines as splays")
         pars.add_argument('--scale', type=float, default=100.0, help="Length of scale bar (in m)")
-        pars.add_argument('--north', type=float, default=0.0, help="Bearing for orientation (in degrees)")
+        pars.add_argument('--bearing', type=float, default=0.0, help="Bearing for orientation (in degrees)")
         pars.add_argument('--tol', type=float, default=0.2, help="Tolerance to equate stations (in m)")
         pars.add_argument('--path-color', type=inkex.Color, default=inkex.Color("red"), help="Path export color")
         pars.add_argument('--scale-color', type=inkex.Color, default=inkex.Color("blue"), help="Path export color")
@@ -233,11 +234,13 @@ class ExportSurvex(inkex.EffectExtension):
                     tape = scale_fac * dl
                     if self.options.plan:
                         depth_change = 0.0
-                        compass = self.options.north + degrees(atan2(ex*dx+ey*dy, nx*dx+ny*dy))
+                        compass = self.options.bearing + degrees(atan2(ex*dx+ey*dy, nx*dx+ny*dy))
                     else: # elevation
-                        depth_change = scale_fac * dz
-                        compass = self.options.north - copysign(90.0, dx)
-                    legs.append({'from': str(i-1), 'to': str(i), 'tape': tape, 'compass': compass, 'depth_change': depth_change})
+                        depth_change = scale_fac * dy
+                        compass = self.options.bearing - copysign(90.0, dx)
+                    legs.append({'from': str(i-1), 'to': str(i),
+                                 'tape': tape, 'compass': compass,
+                                 'depth_change': depth_change})
                 prev = pos
             traverses.append({'id': line['id'], 'legs': legs, 'splay': line['dashed']})
 
@@ -298,11 +301,15 @@ class ExportSurvex(inkex.EffectExtension):
             f.write(f"; generated {strftime('%c')}\n\n")
 
             if self.options.plan:
-                f.write(f"; SVG orientation: vector ({nx:0.3f}, {ny:0.3f}) is {self.round360(self.options.north):0.1f} degrees\n")
-                f.write(f"; SVG orientation: vector ({ex:0.3f}, {ey:0.3f}) is {self.round360(self.options.north+90):0.1f} degrees\n")
+                f.write(f"; SVG orientation: vector ({nx:0.3f}, {ny:0.3f}) is ")
+                f.write(f"{self.round360(self.options.bearing):0.1f} degrees\n")
+                f.write(f"; SVG orientation: vector ({ex:0.3f}, {ey:0.3f}) is ")
+                f.write(f"{self.round360(self.options.bearing+90):0.1f} degrees\n")
             else:
-                f.write(f"; SVG orientation: facing direction is {self.round360(self.options.facing):0.1f} degrees\n")
-            f.write(f"; SVG scale: {scale_len:0.2f} units = {self.options.scale:0.1f} m, scale factor {scale_fac:0.4f}\n")
+                f.write(f"; SVG orientation: facing direction is ")
+                f.write(f"{self.round360(self.options.bearing):0.1f} degrees\n")
+            f.write(f"; SVG scale: {scale_len:0.2f} units = {self.options.scale:0.1f} m, ")
+            f.write(f"scale factor {scale_fac:0.4f}\n")
             f.write(f"; SVG contained {ntraverse} traverses and {nstation} stations\n")
             f.write(f"; SVG tolerance for identifying equates {self.options.tol:0.2f} m\n")
 
