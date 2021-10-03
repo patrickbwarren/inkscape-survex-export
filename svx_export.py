@@ -270,7 +270,7 @@ class ExportSurvex(inkex.EffectExtension):
             if dl * scale_fac < self.options.tol:
                 equates.append({'pair': pair, 'sepn': dl})
 
-        # The /set/ of stations required for export.
+        # The set of stations required for export.
 
         exports = set([f"{station['traverse']}.{station['id']}"
                        for el in equates for station in el['pair']])
@@ -342,7 +342,7 @@ class ExportSurvex(inkex.EffectExtension):
             f.write(f"\n*end {top_level}\n")
             f.write("\n; end of file\n")
 
-        sys.stderr.write(f"Successfully generated {svx_file}\n")
+        sys.stderr.write(f"Successfully generated {svx_file} from {len(self.poly_lines)} (poly)line(s)\n")
 
 if __name__ == "__main__":
     ExportSurvex().run()

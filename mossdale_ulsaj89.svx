@@ -9,7 +9,7 @@
 ; SVG tolerance for identifying equates 0.20 m
 
 *cs OSGB:SE
-*cs out EPSG:27700
+*cs out EPSG:7405
 
 *fix entrance 01667 69779 425
 *entrance entrance

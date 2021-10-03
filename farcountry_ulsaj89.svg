@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:xlink="http://www.w3.org/1999/xlink"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    inkscape:export-ydpi="96"
    inkscape:export-xdpi="96"
    inkscape:export-filename="/home/patrick/GitHub/inkscape-survex-export/farcountry_ulsaj89_inkscape.png"
    sodipodi:docname="farcountry_ulsaj89.svg"
-   inkscape:version="1.0.2 (e86c870879, 2021-01-15)"
+   inkscape:version="1.1 (c68e22c387, 2021-05-23)"
    version="1.1"
    id="svg2"
    viewBox="0 0 1052.3622 744.09448"
    height="210mm"
-   width="297mm">
+   width="297mm"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
   <defs
      id="defs4">
     <marker
@@ -37,23 +37,24 @@
   </defs>
   <sodipodi:namedview
      inkscape:document-rotation="0"
-     inkscape:window-maximized="0"
-     inkscape:window-y="15"
-     inkscape:window-x="120"
-     inkscape:window-height="1001"
-     inkscape:window-width="1591"
+     inkscape:window-maximized="1"
+     inkscape:window-y="25"
+     inkscape:window-x="0"
+     inkscape:window-height="1005"
+     inkscape:window-width="1920"
      showgrid="false"
      inkscape:current-layer="layer2"
      inkscape:document-units="px"
-     inkscape:cy="374.57407"
-     inkscape:cx="512.32641"
+     inkscape:cy="374.28571"
+     inkscape:cx="511.42857"
      inkscape:zoom="0.7"
      inkscape:pageshadow="2"
      inkscape:pageopacity="0.0"
      borderopacity="1.0"
      bordercolor="#666666"
      pagecolor="#ffffff"
-     id="base" />
+     id="base"
+     inkscape:pagecheckerboard="0" />
   <metadata
      id="metadata7">
     <rdf:RDF>
@@ -74,7 +75,6 @@
      inkscape:label="image"
      sodipodi:insensitive="true">
     <image
-       sodipodi:absref="/home/patrick/GitHub/inkscape-survex-export/farcountry_ulsaj89.png"
        xlink:href="farcountry_ulsaj89.png"
        width="1015.8"
        height="644.40002"
@@ -87,7 +87,8 @@
      style="display:inline"
      inkscape:label="scale"
      id="layer3"
-     inkscape:groupmode="layer">
+     inkscape:groupmode="layer"
+     sodipodi:insensitive="true">
     <path
        sodipodi:nodetypes="cc"
        inkscape:connector-curvature="0"
@@ -100,6 +101,22 @@
        d="M 786.44698,318.78045 H 925.46923"
        style="fill:none;fill-rule:evenodd;stroke:#0000ff;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        sodipodi:nodetypes="cc" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:37.5px;line-height:0.75;font-family:sans-serif;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.9375"
+       x="792.34192"
+       y="237.93513"
+       id="text863"><tspan
+         sodipodi:role="line"
+         id="tspan861"
+         x="792.34192"
+         y="237.93513"
+         style="font-size:22.5px;text-align:center;text-anchor:middle;fill:#0000ff;stroke-width:0.9375">Scalebar </tspan><tspan
+         sodipodi:role="line"
+         x="792.34192"
+         y="266.06012"
+         style="font-size:22.5px;text-align:center;text-anchor:middle;fill:#0000ff;stroke-width:0.9375"
+         id="tspan865">200 ft = 60.96 m</tspan></text>
   </g>
   <g
      style="display:inline"
@@ -222,21 +239,5 @@
        id="path4199"
        d="m 944.6875,416.54984 -3.97321,-17.63393 12.14285,-21.96429 10.71429,-14.64285 20.53571,2.5"
        style="fill:none;fill-rule:evenodd;stroke:#ff0000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:37.5px;line-height:0.75;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.9375"
-       x="792.34192"
-       y="237.93513"
-       id="text863"><tspan
-         sodipodi:role="line"
-         id="tspan861"
-         x="792.34192"
-         y="237.93513"
-         style="font-size:22.5px;text-align:center;text-anchor:middle;fill:#0000ff;stroke-width:0.9375">Scalebar </tspan><tspan
-         sodipodi:role="line"
-         x="792.34192"
-         y="266.06012"
-         style="font-size:22.5px;text-align:center;text-anchor:middle;fill:#0000ff;stroke-width:0.9375"
-         id="tspan865">200 ft = 60.96 m</tspan></text>
   </g>
 </svg>

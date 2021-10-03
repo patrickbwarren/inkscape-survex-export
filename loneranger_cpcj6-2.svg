@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:xlink="http://www.w3.org/1999/xlink"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    inkscape:export-ydpi="96"
    inkscape:export-xdpi="96"
    inkscape:export-filename="/home/patrick/GitHub/inkscape-survex-export/loneranger_cpcj6-2_inkscape.png"
    sodipodi:docname="loneranger_cpcj6-2.svg"
-   inkscape:version="1.0.2 (e86c870879, 2021-01-15)"
+   inkscape:version="1.1 (c68e22c387, 2021-05-23)"
    version="1.1"
    id="svg2"
    viewBox="0 0 2104.7244 1488.189"
    height="420mm"
-   width="594mm">
+   width="594mm"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
   <defs
      id="defs4">
     <marker
@@ -40,20 +40,21 @@
      inkscape:window-maximized="1"
      inkscape:window-y="25"
      inkscape:window-x="0"
-     inkscape:window-height="1006"
+     inkscape:window-height="1005"
      inkscape:window-width="1920"
      showgrid="false"
      inkscape:current-layer="layer4"
      inkscape:document-units="px"
-     inkscape:cy="947.79685"
-     inkscape:cx="985.39507"
+     inkscape:cy="947.52308"
+     inkscape:cx="969.74644"
      inkscape:zoom="0.49497475"
      inkscape:pageshadow="2"
      inkscape:pageopacity="0.0"
      borderopacity="1.0"
      bordercolor="#666666"
      pagecolor="#ffffff"
-     id="base" />
+     id="base"
+     inkscape:pagecheckerboard="0" />
   <metadata
      id="metadata7">
     <rdf:RDF>
@@ -74,7 +75,6 @@
      inkscape:groupmode="layer"
      inkscape:label="image">
     <image
-       sodipodi:absref="/home/patrick/GitHub/inkscape-survex-export/loneranger_cpcj6-2.png"
        xlink:href="loneranger_cpcj6-2.png"
        width="1530"
        height="867.59998"
@@ -82,6 +82,34 @@
        id="image4288"
        x="241.11192"
        y="-119.10168" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer4"
+     inkscape:label="scale"
+     style="display:inline"
+     sodipodi:insensitive="true">
+    <path
+       inkscape:connector-curvature="0"
+       id="path4321"
+       d="m 852.5,911.76039 h 201.4286"
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#0000ff;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path4323"
+       d="M 757.86695,946.7472 V 804.82077"
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#00ff00;stroke-width:1.00031;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow1Lend)" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:37.5px;line-height:1.25;font-family:sans-serif;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.9375"
+       x="860.966"
+       y="953.63403"
+       id="text844"><tspan
+         sodipodi:role="line"
+         id="tspan842"
+         x="860.966"
+         y="953.63403"
+         style="font-size:22.5px;fill:#0000ff;stroke-width:0.9375">Scalebar = 30 m</tspan></text>
   </g>
   <g
      style="display:inline"
@@ -135,32 +163,5 @@
        id="path4296"
        d="m 1199.9107,625.33182 -21.3393,40"
        style="display:inline;fill:none;fill-rule:evenodd;stroke:#ff0000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
-  </g>
-  <g
-     inkscape:groupmode="layer"
-     id="layer4"
-     inkscape:label="scale"
-     style="display:inline">
-    <path
-       inkscape:connector-curvature="0"
-       id="path4321"
-       d="m 852.5,911.76039 h 201.4286"
-       style="display:inline;fill:none;fill-rule:evenodd;stroke:#0000ff;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
-    <path
-       inkscape:connector-curvature="0"
-       id="path4323"
-       d="M 757.86695,946.7472 V 804.82077"
-       style="display:inline;fill:none;fill-rule:evenodd;stroke:#00ff00;stroke-width:1.00031251;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none;marker-end:url(#Arrow1Lend)" />
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:37.5px;line-height:1.25;font-family:sans-serif;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.9375"
-       x="860.966"
-       y="953.63403"
-       id="text844"><tspan
-         sodipodi:role="line"
-         id="tspan842"
-         x="860.966"
-         y="953.63403"
-         style="font-size:22.5px;fill:#0000ff;stroke-width:0.9375">Scalebar = 30 m</tspan></text>
   </g>
 </svg>
