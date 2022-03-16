@@ -6,12 +6,143 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <title>README</title>
   <style>
+    html {
+      line-height: 1.5;
+      font-family: Georgia, serif;
+      font-size: 20px;
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      word-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 1em;
+      }
+    }
+    @media print {
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, 'Lucida Console', Consolas, monospace;
+      font-size: 85%;
+      margin: 0;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
     span.underline{text-decoration: underline;}
     div.column{display: inline-block; vertical-align: top; width: 50%;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     ul.task-list{list-style: none;}
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
@@ -20,7 +151,7 @@
 <body>
 <h2 id="export-an-inkscape-line-drawing-to-a-survex-file">Export an inkscape line drawing to a survex file</h2>
 <p><em>Current version:</em></p>
-<p>v3.0 - export plans, and / or separately elevations</p>
+<p>v3.0 - export plans and elevations</p>
 <p><em>Previous versions:</em></p>
 <p>v2.1 - minor improvements<br />
 v2.0 - completely rewritten for Inkscape 1.0<br />
@@ -33,7 +164,8 @@ v1.1 - for Inkscape 0.92</p>
 <li>georeferencing a drawn-up survey (see below);</li>
 <li>giving ‘armchair cavers’ something useful to do.</li>
 </ul>
-<p>Some example surveys (Inkscape traced drawings) are also included.</p>
+<p>Some example surveys (Inkscape traced drawings) are included.</p>
+<p>Note that whilst plans and elevations can be digitised separately, merging them into a single survex file still has to be done by hand. Automating this would clearly be highly desirable but the work flow is quite complicated to design and implement and there are many edge cases to consider. If you have ideas and/or proposals for how to do this please feel free to get in touch!</p>
 <p>This documentation (README) is also available in <a href="README.pdf">PDF</a> and <a href="README.html">HTML</a>.</p>
 <h3 id="installation">Installation</h3>
 <p>Copy the files <code>svx_export.py</code>, <code>svx_plan_export.inx</code> and <code>svx_elev_export.inx</code> into your local Inkscape extension folder, namely:</p>
@@ -122,15 +254,15 @@ v1.1 - for Inkscape 0.92</p>
 </ol>
 <h3 id="examples">Examples</h3>
 <figure>
-<img src="loneranger_cpcj6-2_inkscape.png" title="Lone Ranger Series from CPC J vol 6(2)" alt="" /><figcaption>Inkscape: <code>loneranger_cpcj6-2.png</code> plus traced survey lines.</figcaption>
+<img src="loneranger_cpcj6-2_inkscape.png" title="Lone Ranger Series from CPC J vol 6(2)" alt="Inkscape: loneranger_cpcj6-2.png plus traced survey lines." /><figcaption aria-hidden="true">Inkscape: <code>loneranger_cpcj6-2.png</code> plus traced survey lines.</figcaption>
 </figure>
 <p>The file <code>loneranger_cpcj6-2.svg</code> traces over a plan view survey of the Lone Ranger series in Link Pot (Easegill) where the PNG image (<code>loneranger_cpcj6-2.png</code>) – originally published in CPC Journal 6(2) – is taken from <a href="http://cavemaps.org/" title="CaveMaps home page">CaveMaps</a>. The scale line end-end distance is 30 m, so ‘Length of scale line (in m)’ in the Parameters tab should be set to 30.0.</p>
 <figure>
-<img src="farcountry_ulsaj89_inkscape.png" title="Far Country from ULSA J 89" alt="" /><figcaption>Inkscape: <code>far_country_ulsaj89.png</code> plus traced survey lines.</figcaption>
+<img src="farcountry_ulsaj89_inkscape.png" title="Far Country from ULSA J 89" alt="Inkscape: far_country_ulsaj89.png plus traced survey lines." /><figcaption aria-hidden="true">Inkscape: <code>far_country_ulsaj89.png</code> plus traced survey lines.</figcaption>
 </figure>
 <p>Similarly, <code>farcountry_ulsaj89.svg</code> traces over a plan view survey of Far Country in Gaping Gill where the PNG image (<code>farcountry_ulsaj89.png</code>) – originally published in the ULSA ‘89 Journal – is likewise taken from <a href="http://cavemaps.org/" title="CaveMaps home page">CaveMaps</a>. In this case the scale line end-end distance is 200 ft, so the ’Length of scale line (in m)’ in the Parameters tab would be set to 60.96. To get an idea of the work involved here, the generated Survex file contains 176 survey stations, joined by 180 legs, with a total length of around 1.5km of passage: it took less than 30 mins of drawing in Inkscape to do.</p>
 <figure>
-<img src="0189-2444-elev_inkscape.png" title="Site 0189 from Matienzo Caves Project" alt="" /><figcaption>Inkscape: <code>0189-2444-elev.jpg</code> plus traced survey lines.</figcaption>
+<img src="0189-2444-elev_inkscape.png" title="Site 0189 from Matienzo Caves Project" alt="Inkscape: 0189-2444-elev.jpg plus traced survey lines." /><figcaption aria-hidden="true">Inkscape: <code>0189-2444-elev.jpg</code> plus traced survey lines.</figcaption>
 </figure>
 <p>Finally, <code>0189-2444-elev.svg</code> traces over a <a href="http://matienzocaves.org.uk/surveys/0189-2444-elev.jpg">French elevation</a> of <a href="http://matienzocaves.org.uk/descrip/0189.htm">site 0189</a> in Matienzo. Here the ‘facing’ direction is set to 20° to correspond to the ‘Coupe suivant un axe N 110°’ and the (magnetic) north arrow shown on the survey. Note also the use of dotted lines here, which can be exported as splays.</p>
 <h4 id="multiple-layers">Multiple layers</h4>
@@ -142,7 +274,7 @@ v1.1 - for Inkscape 0.92</p>
 <h3 id="georeferencing">Georeferencing</h3>
 <p>Georeferencing refers to assigning a co-ordinate system to a map, in this case for example to a scanned hard copy of a survey. The actual steps require identifying so-called Ground Control Points (GCPs), which are identifiable features on the map for which actual co-ordinates are known. If the survey has a grid, or multiple entrances, these can be used. Frequently though the survey may only have one entrance, and just a scale bar and North arrow. In this case one can use the survex export plugin to generate co-ordinates for additional GCPs in the cave. To do this one can either trace over the passages and export the survex file, or more simply trace a fake centerline which simply connects the extra GCPs to the entrance. Check the generated <code>.svx</code> file can be processed, and then add a <code>*fix</code> command to fix the entrance GCP to the known co-ordinates. Processing this file allows you to extract the co-ordinates of the GCPs.</p>
 <figure>
-<img src="mossdale_ulsaj89_inkscape.png" title="Mossdale Caverns from ULSA J 89" alt="" /><figcaption>Inkscape: <code>mossdale_ulsaj89.png</code> plus artifical survey lines.</figcaption>
+<img src="mossdale_ulsaj89_inkscape.png" title="Mossdale Caverns from ULSA J 89" alt="Inkscape: mossdale_ulsaj89.png plus artifical survey lines." /><figcaption aria-hidden="true">Inkscape: <code>mossdale_ulsaj89.png</code> plus artifical survey lines.</figcaption>
 </figure>
 <p>For example suppose one wanted to georeference the ULSA 1989 Mossdale survey, which is included here as <code>mossdale_ulsaj89.png</code>. The original of this was downloaded from <a href="http://cavemaps.org/%20%22CaveMaps%20home%20page%22">CaveMaps</a>. This version has some material cropped out and has been reduced to a binary (2-color) image. The image is imported into inkscape and the scale bar (500ft = 152.4m) and North arrow traced (conveniently, the survey uses true North, so magnetic declination need not be corrected). To georeference, the simplest approach is to add a single line connecting the entrance to a distant identifiable feature in the cave, for example the small chamber shown at the end of the Stream End Cave passage. This line will be exported as the survex centerline and the two stations will be our GCPs. The resulting inkscape drawing is included here as <code>mossdale_ulsaj89.svg</code>. The exported survex file, modified as described below, is <code>mossdale_ulsaj89.svx</code>.</p>
 <p>We now need to establish the co-ordinates of the entrance, as the first GCP. To do this one can of course make a site visit with a GPS, or perhaps more conveniently make a virtual site visit using <a href="http://www.magic.gov.uk/magicmap.aspx" title="Magic Map">MagicMap</a> website and use the ‘Where am I?’ option to find the entrance is at (E, N) = (401667, 469779). This is the full 12-figure National Grid Reference (NGR). The 6-figure NGR SE 016697 given on the survey is correct of course, but as it locates the entrance only to within a 100m square it’s not really accurate enough.</p>
@@ -171,7 +303,7 @@ v1.1 - for Inkscape 0.92</p>
 <p>(saved as <code>mossdale_ulsaj89.pos</code>). The two entries give the co-ordinates of the GCPs in the EPSG:7405 CRS and we can now proceed to georeference the image file, using for example <a href="http://www.qgis.org/" title="QGIS website">QGIS</a>. The final result, here provided as <code>mossdale_ulsaj89.tiff</code> in <a href="https://en.wikipedia.org/wiki/GeoTIFF" title="GeoTIFF on Wikipedia">GeoTIFF</a> format, can be directly imported into a GIS platform such as <a href="http://www.qgis.org/" title="QGIS website">QGIS</a>, and superimposed on other mapping data, Google satellite imagery, or the Environment Agency LIDAR data where available, for example.</p>
 <p>Since it is also georeferenced (by the <code>*cs</code> commands) the survex centreline data can also be imported into QGIS using a <a href="https://github.com/patrickbwarren/qgis3-survex-import">plugin to import survex .3d files</a>. The combined result, superimposed on an <a href="https://www.openstreetmap.org/">Open Street Map</a> background, is here:</p>
 <figure>
-<img src="mossdale_ulsaj89_qgis3.png" title="Mossdale Caverns from ULSA J 89 plus Open Street Map data." alt="" /><figcaption>QGIS3: <code>mossdale_ulsaj89.tiff</code> plus artificial survey line and Open Street Map data</figcaption>
+<img src="mossdale_ulsaj89_qgis3.png" title="Mossdale Caverns from ULSA J 89 plus Open Street Map data." alt="QGIS3: mossdale_ulsaj89.tiff plus artificial survey line and Open Street Map data" /><figcaption aria-hidden="true">QGIS3: <code>mossdale_ulsaj89.tiff</code> plus artificial survey line and Open Street Map data</figcaption>
 </figure>
 <h3 id="copying">Copying</h3>
 <p>This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.</p>

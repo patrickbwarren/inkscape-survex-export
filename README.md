@@ -2,7 +2,7 @@
 
 _Current version:_
 
-v3.0 - export plans, and / or separately elevations
+v3.0 - export plans and elevations
 
 _Previous versions:_
 
@@ -12,7 +12,8 @@ v1.1 - for Inkscape 0.92
 
 ### Summary
 
-This plugin provides a mechanism to export inkscape line drawings as survex (`.svx`) input files.
+This plugin provides a mechanism to export inkscape line drawings
+as survex (`.svx`) input files.
 Use-cases include:
 
 * producing a length or depth estimate for a drawn-up survey;
@@ -20,7 +21,14 @@ Use-cases include:
 * georeferencing a drawn-up survey (see below);
 * giving 'armchair cavers' something useful to do.
 
-Some example surveys (Inkscape traced drawings) are also included.
+Some example surveys (Inkscape traced drawings) are included.
+
+Note that whilst plans and elevations can be digitised separately,
+merging them into a single survex file still has to be done by hand.
+Automating this would clearly be highly desirable but the work flow is
+quite complicated to design and implement and there are many edge
+cases to consider.  If you have ideas and/or proposals for how to do
+this please feel free to get in touch!
 
 This documentation (README) is also available in [PDF](README.pdf) and
 [HTML](README.html).
