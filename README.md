@@ -119,7 +119,7 @@ where:
 
 ### Workflow
 
-Usually the drawing will be made by tracing over a scannned image of a
+Usually the drawing will be made by tracing over a scanned image of a
 drawn-up survey.  A typical workflow might be as follows:
 
 * start a new Inkscape document;
