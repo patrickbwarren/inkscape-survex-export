@@ -54,7 +54,9 @@ along with this program.  If not, see
   <label> * the scalebar line (usually blue) sets the scale conversion;</label>
   <label> * the orientation is taken from the facing direction</label>
   <label>The default colors can be changed in the color tabs.</label>
-  <param name="debug" type="bool" gui-hidden="true" gui-text="Generate additional debugging information"></param>
+  <!--
+      <param name="debug" type="bool" gui-hidden="true" gui-text="Generate additional debugging information"></param>
+  -->
   <param name="plan" type="bool" gui-hidden="true" gui-text="Deselect plan (hidden option)">false</param>
   <effect needs-live-preview="false" needs-document="true">
     <object-type>all</object-type>
