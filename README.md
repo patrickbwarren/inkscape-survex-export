@@ -2,9 +2,11 @@
 
 _Current version:_
 
-v3.0 - export plans and elevations
+v3.1 - fixes a bug introduced by the Inkscape 1.4+ API
 
 _Previous versions:_
+
+v3.0 - export plans and elevations
 
 v2.1 - minor improvements  
 v2.0 - completely rewritten for Inkscape 1.0  
@@ -35,11 +37,15 @@ This documentation (README) is also available in [PDF](README.pdf) and
 
 ### Installation
 
-Copy the files `svx_export.py`, `svx_plan_export.inx` and `svx_elev_export.inx` into your local
+Copy the files `svx_export.py`, `svx_plan_export.inx`
+and `svx_elev_export.inx` into your local
 Inkscape extension folder, namely:
 
 * `~/.config/inkscape/extensions/` on unix / linux,
 * `%APPDATA%\inkscape\extensions\` on Windows.
+
+Older versions of Inkscape may require `svx_export_prev.py` but it is
+likely that they will just work with the current `svx_export.py`.
 
 ### Usage
 
@@ -403,5 +409,5 @@ along with this program.  If not, see
 
 ### Copyright
 
-This program is copyright &copy; 2015, 2020, 2021 Patrick B Warren.  
+This program is copyright &copy; 2015, 2020, 2021, 2026 Patrick B Warren.  
 Survey copyrights &copy; are retained by original copyright holders.
