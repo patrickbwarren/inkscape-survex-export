@@ -44,9 +44,6 @@ Inkscape extension folder, namely:
 * `~/.config/inkscape/extensions/` on unix / linux,
 * `%APPDATA%\inkscape\extensions\` on Windows.
 
-Older versions of Inkscape may require `svx_export_prev.py` but it is
-likely that they will just work with the current `svx_export.py`.
-
 ### Usage
 
 The extensions appear under "Extensions &rarr; Export" as 

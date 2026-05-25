@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """svx_output.py
-Python script for exporting survex (.svx) files from Inkscape
+Python script for exporting survex (.svx) files from Inkscape.
 
 The same script is used for both plan and elevation exports since 95%
 of the code is common.  The boolean command line option 'plan' selects
@@ -8,7 +8,7 @@ between them.  In the .inx files, this option is set true or false by
 a gui-hidden parameter.  For elevation the orientation line color
 selector is similarly gui-hidden and set to a benign default value.
 
-Copyright (C) 2015, 2020, 2021 Patrick B Warren
+Copyright (C) 2015, 2020, 2021, 2026 Patrick B Warren
 
 Email: patrickbwarren@gmail.com
 
@@ -90,7 +90,7 @@ class ExportSurvex(inkex.EffectExtension):
         for i, seg in enumerate(path):
             if isinstance(seg, (inkex.paths.Horz, inkex.paths.Vert)):
                 path[i] = inkex.paths.Line(path[i].cend_point(0+0j, complex(*path[i-1].args)))
-#                path[i] = seg.to_line(path[i-1]) # ^^^ replacement for buggy implementation in inkex
+                # path[i] = seg.to_line(path[i-1]) # ^^^ replacement for buggy implementation in Inkscape 1.4-ish
         return path
 
     def add_arguments(self, pars):
