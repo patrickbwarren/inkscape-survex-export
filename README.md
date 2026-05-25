@@ -2,12 +2,11 @@
 
 _Current version:_
 
-v3.1 - fixes a bug introduced by the Inkscape 1.4+ API
+v3.1 - fixes a bug introduced by the Inkscape 1.4-ish API
 
 _Previous versions:_
 
-v3.0 - export plans and elevations
-
+v3.0 - export plans and elevations  
 v2.1 - minor improvements  
 v2.0 - completely rewritten for Inkscape 1.0  
 v1.1 - for Inkscape 0.92
