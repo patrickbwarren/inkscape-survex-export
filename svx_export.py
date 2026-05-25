@@ -12,6 +12,15 @@ Copyright (C) 2015, 2020, 2021, 2026 Patrick B Warren
 
 Email: patrickbwarren@gmail.com
 
+Current version:
+v3.1 - fixes a bug introduced by the Inkscape 1.4-ish API
+
+Previous versions:
+v3.0 - export plans and elevations  
+v2.1 - minor improvements  
+v2.0 - completely rewritten for Inkscape 1.0  
+v1.1 - for Inkscape 0.92
+
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 2 of the License, or
